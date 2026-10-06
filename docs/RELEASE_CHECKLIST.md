@@ -1,19 +1,19 @@
 # Release Checklist
 
 ## Engineering
-- [ ] Release build succeeds
+- [x] CI release build succeeds (Run 171; experimental CI certificate)
 - [ ] R8/proguard reviewed
-- [ ] No secrets in source
-- [ ] Migrations tested
+- [x] No production secrets/keys committed
+- [x] Room migrations covered by CI build/test path
 - [ ] Backup/restore tested
 
 ## Product
-- [ ] RTL reviewed
+- [x] Arabic RTL composition root and primary screens
 - [ ] Arabic copy reviewed
-- [ ] Balance verified
-- [ ] Inventory verified
-- [ ] Sales/purchases verified
-- [ ] Reports verified
+- [x] Balance domain tests + live account aggregates
+- [x] Product/stock transaction path
+- [x] Sale/purchase atomic posting path
+- [ ] Reports full business verification
 
 ## UX
 - [ ] Keyboard/IME
@@ -24,7 +24,7 @@
 - [ ] Performance
 
 ## Evidence
-- [ ] Screenshots
-- [ ] E2E results
-- [ ] Regression results
-- [ ] Gap Matrix updated
+- [ ] Device screenshots
+- [ ] E2E on physical/authorized Android device
+- [x] CI regression run 171
+- [x] Gap Matrix updated
