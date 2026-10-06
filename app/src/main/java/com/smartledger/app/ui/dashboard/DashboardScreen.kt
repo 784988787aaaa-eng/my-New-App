@@ -61,12 +61,14 @@ fun DashboardScreen(onNavigate: (String) -> Unit = {}, viewModel: DashboardViewM
         }
         item {
             Text(stringResource(R.string.quick_actions), style = MaterialTheme.typography.titleMedium)
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Spacer(Modifier.height(6.dp))
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(actions) { action ->
-                    FilledTonalButton(onClick = { onNavigate(action.route) }, contentPadding = PaddingValues(12.dp)) {
-                        Icon(action.icon, contentDescription = stringResource(action.label))
-                        Spacer(Modifier.width(6.dp))
-                        Text(stringResource(action.label))
+                    Card(onClick = { onNavigate(action.route) }, colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer), modifier = Modifier.width(112.dp)) {
+                        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Icon(action.icon, contentDescription = stringResource(action.label), tint = MaterialTheme.colorScheme.primary)
+                            Text(stringResource(action.label), style = MaterialTheme.typography.labelLarge, maxLines = 2)
+                        }
                     }
                 }
             }
