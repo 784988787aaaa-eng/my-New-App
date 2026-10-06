@@ -12,6 +12,8 @@ object DatabaseMigrations {
             db.execSQL("CREATE TABLE IF NOT EXISTS employees (id TEXT NOT NULL PRIMARY KEY, name TEXT NOT NULL, phone TEXT, active INTEGER NOT NULL)")
             db.execSQL("CREATE TABLE IF NOT EXISTS audit_logs (id TEXT NOT NULL PRIMARY KEY, action TEXT NOT NULL, entityType TEXT NOT NULL, entityId TEXT, actorId TEXT, timestamp INTEGER NOT NULL, metadata TEXT)")
             db.execSQL("CREATE TABLE IF NOT EXISTS recycle_bin (id TEXT NOT NULL PRIMARY KEY, entityType TEXT NOT NULL, entityId TEXT NOT NULL, payload TEXT NOT NULL, deletedAt INTEGER NOT NULL)")
+            db.execSQL("CREATE TABLE IF NOT EXISTS users (id TEXT NOT NULL PRIMARY KEY, username TEXT NOT NULL, displayName TEXT NOT NULL, role TEXT NOT NULL, passwordSalt TEXT NOT NULL, passwordHash TEXT NOT NULL, passwordIterations INTEGER NOT NULL, active INTEGER NOT NULL)")
+            db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_users_username ON users(username)")
         }
     }
 
