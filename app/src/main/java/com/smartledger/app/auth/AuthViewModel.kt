@@ -32,7 +32,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun login(username: String, password: String) {
+    fun login(username: String, password: CharArray) {
         viewModelScope.launch {
             runCatching { manager.login(username, password) }
                 .onSuccess { _state.value = AuthState.SignedIn(it) }
@@ -40,7 +40,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun bootstrapOwner(username: String, displayName: String, password: String) {
+    fun bootstrapOwner(username: String, displayName: String, password: CharArray) {
         viewModelScope.launch {
             runCatching { manager.bootstrapOwner(username, displayName, password) }
                 .onSuccess { _state.value = AuthState.SignedIn(it) }
