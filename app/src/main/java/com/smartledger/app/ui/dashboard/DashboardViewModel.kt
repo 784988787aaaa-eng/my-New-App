@@ -15,7 +15,7 @@ data class DashboardState(val receivable: Long, val payable: Long, val peopleCou
 
 class DashboardViewModel(application: Application) : AndroidViewModel(application) {
     private val db = Room.databaseBuilder(application, SmartLedgerDatabase::class.java, "smart_ledger.db")
-        .addMigrations(DatabaseMigrations.MIGRATION_1_2, DatabaseMigrations.MIGRATION_2_3).build()
+        .addMigrations(DatabaseMigrations.MIGRATION_1_2, DatabaseMigrations.MIGRATION_2_3, DatabaseMigrations.MIGRATION_3_4).build()
 
     val state = combine(
         db.operationDao().totalReceivable(),
