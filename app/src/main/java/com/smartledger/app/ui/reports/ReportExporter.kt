@@ -6,6 +6,8 @@ import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
 import androidx.core.content.FileProvider
 import java.io.File
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 object ReportExporter {
     fun sharePdf(context: Context, title: String, lines: List<String>) {
@@ -20,20 +22,25 @@ object ReportExporter {
             page.canvas.drawText(title, 555f, y, paint)
             y += 36f
             lines.forEach { line ->
-                if (y <= 800f) { page.canvas.drawText(line, 555f, y, paint); y += 26f }
+                if (y <= 800f) {
+                    page.canvas.drawText(line, 555f, y, paint)
+                    y += 26f
+                }
             }
             document.finishPage(page)
             file.outputStream().use { document.writeTo(it) }
-        } finally { document.close() }
+        } finally {
+            document.close()
+        }
         share(context, file, "application/pdf")
     }
 
     fun shareExcel(context: Context, rows: List<List<String>>) {
         val dir = File(context.cacheDir, "reports").apply { mkdirs() }
         val file = File(dir, "SmartLedger_" + System.currentTimeMillis() + ".xlsx")
-        java.util.zip.ZipOutputStream(file.outputStream().buffered()).use { zip ->
+        ZipOutputStream(file.outputStream().buffered()).use { zip ->
             fun entry(name: String, content: String) {
-                zip.putNextEntry(java.util.zip.ZipEntry(name))
+                zip.putNextEntry(ZipEntry(name))
                 zip.write(content.toByteArray(Charsets.UTF_8))
                 zip.closeEntry()
             }
@@ -44,10 +51,10 @@ object ReportExporter {
             val sheet = buildString {
                 append("""<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>""")
                 rows.forEachIndexed { ri, row ->
-                    append("<row r="").append(ri + 1).append("">")
+                    append("<row r='").append(ri + 1).append("'>")
                     row.forEachIndexed { ci, value ->
                         val col = ('A'.code + ci).toChar()
-                        append("<c r="").append(col).append(ri + 1).append("" t="inlineStr"><is><t>")
+                        append("<c r='").append(col).append(ri + 1).append("' t='inlineStr'><is><t>")
                         append(xml(value))
                         append("</t></is></c>")
                     }
@@ -61,10 +68,11 @@ object ReportExporter {
     }
 
     private fun xml(value: String): String = value
-        .replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-        .replace(""", "&quot;").replace("'", "&apos;")
-
-    private fun csv(value: String): String = "\"" + value.replace("\"", "\"\"") + "\""
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("\"", "&quot;")
+        .replace("'", "&apos;")
 
     private fun share(context: Context, file: File, type: String) {
         val uri = FileProvider.getUriForFile(context, context.packageName + ".files", file)
