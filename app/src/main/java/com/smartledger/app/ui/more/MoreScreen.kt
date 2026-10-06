@@ -60,11 +60,11 @@ class MoreViewModel(application: Application) : AndroidViewModel(application) {
 }
 
 @Composable
-fun MoreScreen(viewModel: MoreViewModel = viewModel()) {\n    val context = androidx.compose.ui.platform.LocalContext.current\n    val restoreLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> uri?.let { viewModel.restoreBackup(it, context.contentResolver) } }
+fun MoreScreen(onOpenBusinessManagement: () -> Unit = {}, viewModel: MoreViewModel = viewModel()) {\n    val context = androidx.compose.ui.platform.LocalContext.current\n    val restoreLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> uri?.let { viewModel.restoreBackup(it, context.contentResolver) } }
     val currency by viewModel.currency.collectAsState(initial = SupportedCurrencies.YER)
     var showCurrency by remember { mutableStateOf(false) }
     var selectedSetting by remember { mutableStateOf<Int?>(null) }
-    val settings = listOf(R.string.business_identity, R.string.backup_restore, R.string.security_privacy, R.string.user_permissions)
+    val settings = listOf(R.string.business_identity, R.string.backup_restore, R.string.security_privacy, R.string.user_permissions, R.string.business_management)
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
