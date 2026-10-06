@@ -14,4 +14,17 @@ class PurchaseRepository(private val db:SmartLedgerDatabase){
    if(supplierId != null && p.outstanding().minorUnits > 0) db.operationDao().insert(OperationEntity(UUID.randomUUID().toString(),supplierId,FinancialDirection.PAYABLE.name,p.outstanding().minorUnits,"مبلغ مستحق للمورد " + p.id,createdAt))
   }
  }
+ suspend fun returnPurchase(id:String,createdAt:Long){
+  db.withTransaction{
+   val purchase=db.purchaseDao().findPurchase(id) ?: error("Purchase not found")
+   require(db.businessDao().countAudit("PURCHASE_RETURN", id, "UPDATE")==0) { "تم إرجاع الفاتورة مسبقاً" }
+   db.purchaseDao().purchaseLines(id).forEach{ line->
+    db.productDao().insertMovement(StockMovementEntity(UUID.randomUUID().toString(),line.productId,-line.quantity,"RETURN_OUT",id,createdAt))
+   }
+   val outstanding=purchase.totalMinorUnits-purchase.paidMinorUnits
+   if(purchase.supplierId!=null && outstanding>0) db.operationDao().insert(OperationEntity(UUID.randomUUID().toString(),purchase.supplierId,FinancialDirection.PAYABLE.name,-outstanding,"مرتجع شراء "+id,createdAt))
+   db.businessDao().insertAudit(AuditLogEntity(UUID.randomUUID().toString(),"UPDATE","PURCHASE_RETURN",id,null,createdAt,"returned=true"))
+  }
+ }
+
 }
