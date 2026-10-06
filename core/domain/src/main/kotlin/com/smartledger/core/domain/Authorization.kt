@@ -8,7 +8,7 @@ enum class Permission {
     VIEW_REPORTS, EXPORT_DATA, MANAGE_USERS, MANAGE_SETTINGS, MANAGE_BACKUP
 }
 
-object PermissionPolicy {
+object PermissionPolicy {\n    fun require(role: Role, permission: Permission) {\n        check(allowed(role, permission)) { "Permission denied: $permission" }\n    }
     fun allowed(role: Role, permission: Permission): Boolean = when (role) {
         Role.OWNER -> true
         Role.ADMIN -> permission !in setOf(Permission.MANAGE_BACKUP)
