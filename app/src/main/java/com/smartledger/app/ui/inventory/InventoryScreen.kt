@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smartledger.app.R
 import com.smartledger.core.domain.MoneyParser
+import com.smartledger.core.domain.MoneyFormatter
+import com.smartledger.core.domain.SupportedCurrencies
 import com.smartledger.app.ui.theme.SmartLedgerColors
 import com.smartledger.app.ui.theme.SmartLedgerDimens
 
@@ -52,7 +54,7 @@ fun InventoryScreen(viewModel: InventoryViewModel = viewModel()) {
                 Column(Modifier.padding(SmartLedgerDimens.Card), verticalArrangement = Arrangement.spacedBy(5.dp)) {
                     Text(product.name, style = MaterialTheme.typography.titleMedium)
                     product.sku?.let { Text(it, color = SmartLedgerColors.TextSecondary) }
-                    Text("سعر البيع: " + product.priceMinorUnits.toString() + " " + stringResource(R.string.currency_yer), color = SmartLedgerColors.TextSecondary)
+                    Text("سعر البيع: " + MoneyFormatter.formatMinorUnits(product.priceMinorUnits, SupportedCurrencies.YER), color = SmartLedgerColors.TextSecondary)
                 }
             }
         }
