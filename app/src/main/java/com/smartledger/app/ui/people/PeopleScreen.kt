@@ -99,7 +99,10 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
                 viewModel.addOperation(id, direction, amount, note) { selectedPersonId = null }
             }
         )
-    }@Composable
+    }
+}
+
+@Composable
 private fun AccountActionsDialog(
     personName: String,
     onDismiss: () -> Unit,
