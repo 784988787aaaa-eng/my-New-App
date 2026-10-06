@@ -41,6 +41,8 @@ object SmartLedgerDimens {
     val SmallIcon = 20.dp
     val Radius = 16.dp
     val RadiusSmall = 12.dp
+    val FormGap = 12.dp
+    val Border = 1.dp
 }
 
 private val SmartLedgerTypography = Typography(
