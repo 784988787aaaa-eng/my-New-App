@@ -115,4 +115,6 @@
     <string name="balance_neutral">متزن</string>
     <string name="smart_receivable">له</string>
     <string name="smart_payable">عليه</string>
+    <string name="statement_title">كشف حساب — %1$s</string>
+    <string name="running_balance">الرصيد الجاري: %1$s</string>
 </resources>
