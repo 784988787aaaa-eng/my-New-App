@@ -5,28 +5,27 @@ PHASE: 1 — Foundation
 STATUS: PARTIAL
 DATE: 2026-10-06
 BASE: main
-HEAD: see repository main branch
+HEAD: c2d8a88671af7e3a4fadb917ee138142d331e9fb
 
 ## INSPECTED
-- Repository exists and is accessible.
+- GitHub repository exists and is writable.
 - Default branch is `main`.
-- Repository was effectively empty before foundation work.
-- README was established as the engineering entry point.
+- Repository was effectively empty before this project baseline.
+- README and engineering reference documents are present.
 
 ## FOUND
-- No evidence of an existing Android application before this baseline.
-- No evidence of existing production domain/data implementation.
+- No prior Android product implementation was found.
+- No prior production database/domain/runtime evidence was found.
 
 ## CHANGED
 - Android Gradle baseline
 - RTL manifest and app entry point
-- Central design tokens
-- First Dashboard UI
-- Money domain value object and tests
-- Design System documentation
-
-## WHY
-Create a coherent foundation before implementing feature screens.
+- Central color/geometry/typography tokens
+- Dashboard visual baseline
+- Unified Navigation Compose shell
+- People, Inventory, Reports, More visual surfaces
+- Money value object and unit tests
+- Engineering and QA documentation
 
 ## DOMAIN
 PARTIAL — Money exists; business aggregates are pending.
@@ -38,34 +37,34 @@ MISSING — Room schema pending.
 MISSING — Keystore/auth foundation pending.
 
 ## UI
-PARTIAL — Dashboard baseline exists.
+PARTIAL — Core visual shell is established.
 
 ## RTL
-PARTIAL — App composition forces RTL; full RTL QA pending.
+PARTIAL — RTL is forced at the composition root; full device QA pending.
 
 ## PERFORMANCE
 NEEDS_VERIFICATION
 
 ## TESTS
-PARTIAL — Money unit tests added; Android UI tests pending.
+PARTIAL — Money tests exist; Compose/E2E tests pending.
 
 ## BUILD
-NEEDS_VERIFICATION — no Android build environment evidence yet.
+NEEDS_VERIFICATION — no connected Android build environment was available during this work session.
 
 ## RUNTIME
-NEEDS_VERIFICATION — no device/emulator evidence yet.
+NEEDS_VERIFICATION — no emulator/device evidence available.
 
 ## VISUAL QA
-NEEDS_VERIFICATION — screenshot evidence pending.
+NEEDS_VERIFICATION — screenshots require a connected Android runtime.
 
 ## RISKS
-- Android/Gradle toolchain compatibility must be verified in a real build environment.
-- Currency is currently a placeholder in the visual baseline and must move to BusinessIdentity/Settings.
-- Dashboard metrics are mock presentation values until repositories/domain flows exist.
+- Gradle/AGP/Kotlin versions must be verified by an actual Android build.
+- Currency is still a temporary presentation resource.
+- Dashboard and feature sample rows are visual placeholders until repositories and use cases exist.
 
 ## NEXT
-1. Wire localization and currency configuration.
-2. Add navigation shell.
-3. Add Room + Hilt foundation.
-4. Build People/Accounts domain.
-5. Build operation form with keyboard and transactional balance logic.
+1. Add Hilt and Room foundation.
+2. Centralize localization and currency/business identity.
+3. Implement People/Books/Operations domain and transaction boundaries.
+4. Replace sample UI with StateFlow-backed repositories.
+5. Add Compose UI tests and Android build evidence.
