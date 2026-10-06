@@ -80,8 +80,8 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
                         Icon(Icons.Outlined.ChevronLeft, contentDescription = stringResource(R.string.open_account))
                     }
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        BalancePill(stringResource(R.string.total_receivable), MoneyFormatter.formatMinorUnits(balance?.receivable ?: 0, currency), SmartLedgerColors.SuccessContainer, SmartLedgerColors.Success)
-                        BalancePill(stringResource(R.string.total_payable), MoneyFormatter.formatMinorUnits(balance?.payable ?: 0, currency), SmartLedgerColors.DangerContainer, SmartLedgerColors.Danger)
+                        BalancePill(Modifier.weight(1f), stringResource(R.string.total_receivable), MoneyFormatter.formatMinorUnits(balance?.receivable ?: 0, currency), SmartLedgerColors.SuccessContainer, SmartLedgerColors.Success)
+                        BalancePill(Modifier.weight(1f), stringResource(R.string.total_payable), MoneyFormatter.formatMinorUnits(balance?.payable ?: 0, currency), SmartLedgerColors.DangerContainer, SmartLedgerColors.Danger)
                     }
                 }
             }
@@ -112,8 +112,8 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
 }
 
 @Composable
-private fun BalancePill(title: String, amount: String, container: androidx.compose.ui.graphics.Color, content: androidx.compose.ui.graphics.Color) {
-    Surface(color = container, shape = MaterialTheme.shapes.medium, modifier = Modifier.weight(1f)) {
+private fun BalancePill(modifier: Modifier, title: String, amount: String, container: androidx.compose.ui.graphics.Color, content: androidx.compose.ui.graphics.Color) {
+    Surface(color = container, shape = MaterialTheme.shapes.medium, modifier = modifier) {
         Column(Modifier.padding(10.dp)) {
             Text(title, style = MaterialTheme.typography.labelMedium, color = content)
             Text(amount, style = MaterialTheme.typography.titleSmall, color = content)
