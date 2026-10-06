@@ -29,7 +29,8 @@ fun DashboardScreen(onNavigate: (String) -> Unit = {}, viewModel: DashboardViewM
         QuickAction(R.string.new_sale, Icons.Outlined.PointOfSale, "sale"),
         QuickAction(R.string.new_purchase, Icons.Outlined.ReceiptLong, "purchase"),
         QuickAction(R.string.add_person, Icons.Outlined.PersonAdd, "people"),
-        QuickAction(R.string.view_inventory, Icons.Outlined.Inventory2, "inventory")
+        QuickAction(R.string.view_inventory, Icons.Outlined.Inventory2, "inventory"),
+        QuickAction(R.string.invoice_history, Icons.Outlined.ReceiptLong, "invoices")
     )
     LazyColumn(
         Modifier.fillMaxSize(),
