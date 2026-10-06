@@ -1,0 +1,29 @@
+name: Smart Ledger Android CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+      - name: Unit tests
+        run: ./gradlew testDebugUnitTest
+      - name: Debug APK
+        run: ./gradlew assembleDebug
