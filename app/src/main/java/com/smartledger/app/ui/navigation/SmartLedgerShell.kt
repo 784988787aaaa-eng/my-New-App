@@ -53,14 +53,14 @@ fun SmartLedgerShell(navController: NavHostController) {
             startDestination = SmartLedgerRoute.Home.route,
             modifier = Modifier.fillMaxSize()
         ) {
-            composable(SmartLedgerRoute.Home.route) { DashboardScreen { route -> navController.navigate(route) { launchSingleTop = true } } }
+            composable(SmartLedgerRoute.Home.route) { DashboardScreen(onNavigate = { route -> navController.navigate(route) { launchSingleTop = true } }) }
             composable(SmartLedgerRoute.People.route) { PeopleScreen() }
             composable(SmartLedgerRoute.Inventory.route) { InventoryScreen() }
             composable(SmartLedgerRoute.Reports.route) { ReportsScreen() }
             composable(SmartLedgerRoute.More.route) { MoreScreen() }
             composable(SmartLedgerRoute.Operation.route) { OperationScreen(onSaved = { navController.popBackStack() }) }
-            composable(SmartLedgerRoute.Sale.route) { CommerceEntryScreen(CommerceMode.SALE) { navController.popBackStack() } }
-            composable(SmartLedgerRoute.Purchase.route) { CommerceEntryScreen(CommerceMode.PURCHASE) { navController.popBackStack() } }
+            composable(SmartLedgerRoute.Sale.route) { CommerceEntryScreen(CommerceMode.SALE, onSaved = { navController.popBackStack() }) }
+            composable(SmartLedgerRoute.Purchase.route) { CommerceEntryScreen(CommerceMode.PURCHASE, onSaved = { navController.popBackStack() }) }
         }
     }
 }
