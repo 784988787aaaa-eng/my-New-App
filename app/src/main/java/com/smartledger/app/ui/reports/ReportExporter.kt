@@ -11,7 +11,8 @@ object ReportExporter {
     fun sharePdf(context: Context, title: String, lines: List<String>) {
         val dir = File(context.cacheDir, "reports").apply { mkdirs() }
         val file = File(dir, "SmartLedger_" + System.currentTimeMillis() + ".pdf")
-        PdfDocument().use { document ->
+        val document = PdfDocument()
+        try {
             val page = document.startPage(PdfDocument.PageInfo.Builder(595, 842, 1).create())
             val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { textSize = 15f }
             var y = 48f
@@ -23,7 +24,7 @@ object ReportExporter {
             }
             document.finishPage(page)
             file.outputStream().use { document.writeTo(it) }
-        }
+        } finally { document.close() }
         share(context, file, "application/pdf")
     }
 
