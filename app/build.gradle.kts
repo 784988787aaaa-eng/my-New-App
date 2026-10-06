@@ -8,6 +8,18 @@ android {
     namespace = "com.smartledger.app"
     compileSdk = 35
     signingConfigs {
+        create("production") {
+            val path = System.getenv("RELEASE_KEYSTORE")
+            val storePass = System.getenv("RELEASE_KEYSTORE_PASSWORD")
+            val alias = System.getenv("RELEASE_KEY_ALIAS")
+            val keyPass = System.getenv("RELEASE_KEY_PASSWORD")
+            if (!path.isNullOrBlank() && !storePass.isNullOrBlank() && !alias.isNullOrBlank() && !keyPass.isNullOrBlank()) {
+                storeFile = file(path)
+                storePassword = storePass
+                this.keyAlias = alias
+                this.keyPassword = keyPass
+            }
+        }
         create("ci") {
             val keystorePath = System.getenv("CI_KEYSTORE")
             val keystorePassword = System.getenv("CI_KEYSTORE_PASSWORD")
@@ -33,7 +45,8 @@ android {
     buildTypes {
         getByName("release") {
             val ciKeystore = System.getenv("CI_KEYSTORE")
-            if (!ciKeystore.isNullOrBlank()) signingConfig = signingConfigs.getByName("ci")
+            val productionKeystore = System.getenv("RELEASE_KEYSTORE")
+            signingConfig = if (!productionKeystore.isNullOrBlank()) signingConfigs.getByName("production") else if (!ciKeystore.isNullOrBlank()) signingConfigs.getByName("ci") else null
         }
     }
     buildFeatures { compose = true }
