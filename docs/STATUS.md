@@ -3,7 +3,7 @@
 PHASE: 10 — QA / Release Candidate
 DATE: 2026-10-06
 BASE: main
-HEAD: f478a7ac68b89491c9af63e281751479bfe22610
+HEAD: cd0a13aa0ac15dd3dc9438942aace1c6c0d9af77
 STATUS: NEEDS_VERIFICATION
 
 ## Implemented
@@ -12,12 +12,12 @@ STATUS: NEEDS_VERIFICATION
 - Core modules: common, domain, database, security, localization, design-system, testing.
 - Room database foundation for people and operations.
 - ViewModel-based application wiring; Hilt is not used in the current implementation.
-- Room-backed People screen with add/search, live balances, and له/عليه entry.
+- Room-backed People screen with add/search, live balances, له/عليه entry, live statement, audited payment/operation mutations, and recycle-bin archiving.
 - Money value object, normalization parser, balance calculator and unit tests.
 - Transactional operation write path.
 - YER default currency with persistent, extensible currency selection.
-- Real sale/purchase entry with atomic stock + balance posting.
-- Backup creation with archive integrity validation from Settings.
+- Real sale/purchase entry with atomic stock + balance posting and multi-line invoice draft.
+- Backup creation with WAL checkpoint, archive integrity validation, pre-restore safety backup, SQLite integrity validation, staged replacement and process restart.
 - GitHub Actions unit-test + debug-build pipeline.
 - Required engineering/design/implementation documentation foundations.
 
@@ -26,14 +26,19 @@ STATUS: NEEDS_VERIFICATION
 - Local Android runtime and screenshot QA are NOT yet verified because no connected development device is available in this environment.
 
 ## Remaining critical work
-- Complete workflows for books, units, expenses, employees, statements and returns.
-- Unified mutation orchestration and statement projections.
-- Auth, roles, permissions, privacy/app lock, audit and recycle bin.
-- Backup/restore with integrity/version checks.
-- Reports/documents/export/share.
-- Remaining feature UI: expenses, employees, statements, users, audit, recycle bin, restore, multi-line invoice editing.
-- UI/IME/accessibility/performance/E2E verification.
-- Release signing, Play Console metadata, privacy policy and production release evidence.
+- Invoice editing and returns still require a complete user-facing history/editor flow; the current entry flow supports multiple lines.
+- Permission enforcement is not yet tied to an authenticated session/user role; domain role policy exists but mutation guards need the real session.
+- Full production document generation, print/share and export pipeline remains.
+- Runtime/device, visual, accessibility and performance QA remain unverified in this environment.
+- Production Play signing remains blocked on the owner's production keystore/secrets; CI signing is intentionally ephemeral.
+- Full end-to-end backup/restore has code paths but has not been executed on a real Android installation in this environment.
+
+## Recently closed
+- Full restore engine path implemented: checkpoint → safety backup → ZIP validation → SQLite integrity check → staged replacement → process restart.
+- Live account statement added and uses the same operations source as balances.
+- Multi-line sales/purchase invoice entry implemented with atomic posting.
+- Expenses and employees management screen added.
+- Audit/recycle management screen added; person archive/restore is transactional and audited.
 
 ## Status protocol
 Use only IMPLEMENTED / PARTIAL / MISSING / BROKEN / NEEDS_VERIFICATION / BLOCKED.
