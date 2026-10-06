@@ -35,6 +35,14 @@ class PeopleViewModel(application: Application) : AndroidViewModel(application) 
     val balances: StateFlow<List<PersonBalanceRow>> = database.personDao().observeBalances()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    fun addPayment(personId: String, direction: FinancialDirection, amount: String, note: String?, onDone: () -> Unit = {}) {
+        viewModelScope.launch {
+            runCatching {
+                operationRepository.payment(personId, direction, MoneyParser.parse(amount), note?.ifBlank { null }, System.currentTimeMillis())
+            }.onSuccess { onDone() }
+        }
+    }
+
     fun addOperation(personId: String, direction: FinancialDirection, amount: String, note: String?, onDone: () -> Unit = {}) {
         viewModelScope.launch {
             runCatching {
