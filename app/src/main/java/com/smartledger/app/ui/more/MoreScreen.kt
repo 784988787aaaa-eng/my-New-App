@@ -23,13 +23,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smartledger.app.R
 import com.smartledger.app.data.CurrencyPreferences
-import com.smartledger.core.backup.BackupIntegrity
-import com.smartledger.core.backup.BackupNaming
-import com.smartledger.core.backup.BackupWriter
-import com.smartledger.core.backup.BackupRestore
-import com.smartledger.core.domain.SupportedCurrencies
 import com.smartledger.app.ui.theme.SmartLedgerColors
 import com.smartledger.app.ui.theme.SmartLedgerDimens
+import com.smartledger.core.backup.BackupIntegrity
+import com.smartledger.core.backup.BackupNaming
+import com.smartledger.core.backup.BackupRestore
+import com.smartledger.core.backup.BackupWriter
+import com.smartledger.core.domain.SupportedCurrencies
 import kotlinx.coroutines.launch
 import java.io.File
 import java.time.LocalDateTime
@@ -50,42 +50,50 @@ class MoreViewModel(application: Application) : AndroidViewModel(application) {
                 val context = getApplication<Application>()
                 val database = context.getDatabasePath("smart_ledger.db")
                 if (database.exists()) {
-                    SQLiteDatabase.openDatabase(database.absolutePath, null, SQLiteDatabase.OPEN_READWRITE).use { it.execSQL("PRAGMA wal_checkpoint(FULL)") }
+                    SQLiteDatabase.openDatabase(database.absolutePath, null, SQLiteDatabase.OPEN_READWRITE).use {
+                        it.execSQL("PRAGMA wal_checkpoint(FULL)")
+                    }
                 }
-                val folder = File(context.getExternalFilesDir(null), "backups")
+                val folder = File(context.getExternalFilesDir(null), "backups").apply { mkdirs() }
                 val now = LocalDateTime.now()
                 val output = File(folder, BackupNaming.fileName(now))
-                val manifest = "{\"formatVersion\":1,\"createdAt\":\"$now\",\"appVersion\":\"0.2.0\"}"
-                BackupWriter.write(output, database, manifest)
+                BackupWriter.write(output, database, "{\"formatVersion\":1,\"createdAt\":\"$now\",\"appVersion\":\"0.2.0\"}")
                 require(BackupIntegrity.validateArchive(output))
                 output.absolutePath
-            }
-        }
-    }
-
-    fun restoreBackup(uri: Uri, resolver: ContentResolver) {
+            }.onSuccess {
                 backupPath = it
                 message = getApplication<Application>().getString(R.string.backup_created)
             }.onFailure {
                 message = it.message ?: getApplication<Application>().getString(R.string.backup_failed)
             }
         }
+    }
+
+    fun restoreBackup(uri: Uri, resolver: ContentResolver) {
         viewModelScope.launch {
             runCatching {
                 val context = getApplication<Application>()
                 val database = context.getDatabasePath("smart_ledger.db")
                 if (database.exists()) {
-                    SQLiteDatabase.openDatabase(database.absolutePath, null, SQLiteDatabase.OPEN_READWRITE).use { it.execSQL("PRAGMA wal_checkpoint(FULL)") }
+                    SQLiteDatabase.openDatabase(database.absolutePath, null, SQLiteDatabase.OPEN_READWRITE).use {
+                        it.execSQL("PRAGMA wal_checkpoint(FULL)")
+                    }
                     val safety = File(context.cacheDir, BackupNaming.fileName())
                     BackupWriter.write(safety, database, "{\"formatVersion\":1,\"type\":\"pre_restore\"}")
                 }
                 val selected = File(context.cacheDir, "selected_restore.zip")
-                resolver.openInputStream(uri).use { input -> requireNotNull(input) { "تعذر قراءة ملف النسخة" }.copyTo(selected.outputStream()) }
+                resolver.openInputStream(uri).use { input ->
+                    requireNotNull(input) { "تعذر قراءة ملف النسخة" }.use { stream ->
+                        selected.outputStream().use { out -> stream.copyTo(out) }
+                    }
+                }
                 val extracted = BackupRestore.extractDatabase(selected, database)
-                val check = SQLiteDatabase.openDatabase(extracted.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
-                val healthy = check.rawQuery("PRAGMA integrity_check", null).use { cursor -> cursor.moveToFirst() && cursor.getString(0) == "ok" }
-                check.close()
-                require(healthy) { "ملف قاعدة البيانات المستعاد غير سليم" }
+                SQLiteDatabase.openDatabase(extracted.absolutePath, null, SQLiteDatabase.OPEN_READONLY).use { check ->
+                    val healthy = check.rawQuery("PRAGMA integrity_check", null).use { cursor ->
+                        cursor.moveToFirst() && cursor.getString(0) == "ok"
+                    }
+                    require(healthy) { "ملف قاعدة البيانات المستعاد غير سليم" }
+                }
                 BackupRestore.replaceDatabase(extracted, database)
                 selected.delete()
             }.onSuccess {
@@ -95,7 +103,6 @@ class MoreViewModel(application: Application) : AndroidViewModel(application) {
                 message = getApplication<Application>().getString(R.string.restore_failed) + ": " + (it.message ?: "")
             }
         }
-    }
     }
 }
 
