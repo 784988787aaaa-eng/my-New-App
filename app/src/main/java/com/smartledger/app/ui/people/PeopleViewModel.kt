@@ -3,14 +3,11 @@ package com.smartledger.app.ui.people
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Room
 import com.smartledger.app.data.PeopleRepository
 import com.smartledger.app.data.CurrencyPreferences
-import com.smartledger.core.database.DatabaseMigrations
 import com.smartledger.core.database.PersonEntity
 import com.smartledger.core.database.RecycleBinEntity
 import com.smartledger.core.database.AuditLogEntity
-import com.smartledger.core.database.SmartLedgerDatabase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import com.smartledger.core.database.PersonBalanceRow
@@ -20,14 +17,11 @@ import com.smartledger.core.domain.MoneyParser
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import androidx.room.withTransaction
+import com.smartledger.app.data.AppDatabaseProvider
 import java.util.UUID
 
 class PeopleViewModel(application: Application) : AndroidViewModel(application) {
-    private val database = Room.databaseBuilder(
-        application,
-        SmartLedgerDatabase::class.java,
-        "smart_ledger.db"
-    ).addMigrations(DatabaseMigrations.MIGRATION_1_2, DatabaseMigrations.MIGRATION_2_3, DatabaseMigrations.MIGRATION_3_4).build()
+    private val database = AppDatabaseProvider.get(application)
     private val repository = PeopleRepository(database.personDao())
     private val operationRepository = OperationRepository(database)
 
@@ -78,8 +72,5 @@ class PeopleViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch { repository.add(name, phone, note) }
     }
 
-    override fun onCleared() {
-        database.close()
-        super.onCleared()
-    }
+
 }
