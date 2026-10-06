@@ -20,7 +20,7 @@ import com.smartledger.app.ui.people.PeopleScreen
 import com.smartledger.app.ui.reports.ReportsScreen
 import com.smartledger.app.ui.operations.OperationScreen
 import com.smartledger.app.ui.commerce.CommerceEntryScreen
-import com.smartledger.app.ui.commerce.CommerceMode
+import com.smartledger.app.ui.commerce.CommerceMode\nimport com.smartledger.app.ui.more.BusinessManagementScreen
 
 @Composable
 fun SmartLedgerShell(navController: NavHostController) {
@@ -60,7 +60,7 @@ fun SmartLedgerShell(navController: NavHostController) {
             composable(SmartLedgerRoute.More.route) { MoreScreen() }
             composable(SmartLedgerRoute.Operation.route) { OperationScreen(onSaved = { navController.popBackStack() }) }
             composable(SmartLedgerRoute.Sale.route) { CommerceEntryScreen(CommerceMode.SALE, onSaved = { navController.popBackStack() }) }
-            composable(SmartLedgerRoute.Purchase.route) { CommerceEntryScreen(CommerceMode.PURCHASE, onSaved = { navController.popBackStack() }) }
+            composable(SmartLedgerRoute.Purchase.route) { CommerceEntryScreen(CommerceMode.PURCHASE, onSaved = { navController.popBackStack() }) }\n            composable(SmartLedgerRoute.BusinessManagement.route) { BusinessManagementScreen() }
         }
     }
 }
