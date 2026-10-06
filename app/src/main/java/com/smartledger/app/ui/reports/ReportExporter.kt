@@ -28,18 +28,41 @@ object ReportExporter {
         share(context, file, "application/pdf")
     }
 
-    fun shareExcelCsv(context: Context, rows: List<List<String>>) {
+    fun shareExcel(context: Context, rows: List<List<String>>) {
         val dir = File(context.cacheDir, "reports").apply { mkdirs() }
-        val file = File(dir, "SmartLedger_" + System.currentTimeMillis() + ".csv")
-        file.outputStream().bufferedWriter(Charsets.UTF_8).use { out ->
-            out.write("\uFEFF")
-            rows.forEach { row ->
-                out.write(row.joinToString(",") { csv(it) })
-                out.newLine()
+        val file = File(dir, "SmartLedger_" + System.currentTimeMillis() + ".xlsx")
+        java.util.zip.ZipOutputStream(file.outputStream().buffered()).use { zip ->
+            fun entry(name: String, content: String) {
+                zip.putNextEntry(java.util.zip.ZipEntry(name))
+                zip.write(content.toByteArray(Charsets.UTF_8))
+                zip.closeEntry()
             }
+            entry("[Content_Types].xml", """<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>""")
+            entry("_rels/.rels", """<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>""")
+            entry("xl/workbook.xml", """<?xml version="1.0" encoding="UTF-8"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="التقرير" sheetId="1" r:id="rId1"/></sheets></workbook>""")
+            entry("xl/_rels/workbook.xml.rels", """<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>""")
+            val sheet = buildString {
+                append("""<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>""")
+                rows.forEachIndexed { ri, row ->
+                    append("<row r="").append(ri + 1).append("">")
+                    row.forEachIndexed { ci, value ->
+                        val col = ('A'.code + ci).toChar()
+                        append("<c r="").append(col).append(ri + 1).append("" t="inlineStr"><is><t>")
+                        append(xml(value))
+                        append("</t></is></c>")
+                    }
+                    append("</row>")
+                }
+                append("</sheetData></worksheet>")
+            }
+            entry("xl/worksheets/sheet1.xml", sheet)
         }
-        share(context, file, "text/csv")
+        share(context, file, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     }
+
+    private fun xml(value: String): String = value
+        .replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        .replace(""", "&quot;").replace("'", "&apos;")
 
     private fun csv(value: String): String = "\"" + value.replace("\"", "\"\"") + "\""
 
