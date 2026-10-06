@@ -122,7 +122,7 @@ fun ReportsScreen(viewModel: ReportsViewModel = viewModel()) {
             },
             confirmButton = { Row {
                 TextButton(onClick = { ReportExporter.sharePdf(context, reportTitle, listOf(detail)) }) { Text("PDF") }
-                TextButton(onClick = { ReportExporter.shareExcelCsv(context, listOf(listOf("التقرير","البيانات"), listOf(reportTitle, detail))) }) { Text("Excel") }
+                TextButton(onClick = { ReportExporter.shareExcel(context, listOf(listOf("التقرير","البيانات"), listOf(reportTitle, detail))) }) { Text("Excel") }
                 TextButton(onClick = { context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, detail) }, "مشاركة التقرير")) }) { Text(stringResource(R.string.share)) }
                 TextButton(onClick = { selectedReport = null }) { Text(stringResource(R.string.close)) }
             } }
