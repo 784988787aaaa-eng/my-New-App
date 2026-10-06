@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -44,7 +45,7 @@ class MoreViewModel(application: Application) : AndroidViewModel(application) {
                 val folder = File(context.getExternalFilesDir(null), "backups")
                 val now = LocalDateTime.now()
                 val output = File(folder, BackupNaming.fileName(now))
-                val manifest = "{\"formatVersion\":1,\"createdAt\":\"$now\",\"appVersion\":\"${com.smartledger.app.BuildConfig.VERSION_NAME}\"}"
+                val manifest = "{\"formatVersion\":1,\"createdAt\":\"$now\",\"appVersion\":\"0.2.0\"}"
                 BackupWriter.write(output, database, manifest)
                 require(BackupIntegrity.validateArchive(output))
                 output.absolutePath
