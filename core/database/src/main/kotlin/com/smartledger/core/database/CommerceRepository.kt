@@ -16,8 +16,9 @@ class CommerceRepository(private val db: SmartLedgerDatabase) {
             sale.lines.forEach { line ->
                 db.productDao().insertMovement(StockMovementEntity(UUID.randomUUID().toString(), line.productId, line.quantity, "SALE", sale.id, createdAt))
             }
-            if (sale.personId != null && sale.outstanding().minorUnits > 0) {
-                db.operationDao().insert(OperationEntity(UUID.randomUUID().toString(), sale.personId, FinancialDirection.RECEIVABLE.name, sale.outstanding().minorUnits, "مبلغ مستحق من البيع " + sale.id, createdAt))
+            val customerId = sale.personId
+            if (customerId != null && sale.outstanding().minorUnits > 0) {
+                db.operationDao().insert(OperationEntity(UUID.randomUUID().toString(), customerId, FinancialDirection.RECEIVABLE.name, sale.outstanding().minorUnits, "مبلغ مستحق من البيع " + sale.id, createdAt))
             }
         }
     }
