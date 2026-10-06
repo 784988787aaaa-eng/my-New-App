@@ -1,4 +1,7 @@
 package com.smartledger.core.database
 import androidx.room.Dao
 import androidx.room.Insert
-@Dao interface PurchaseDao { @Insert suspend fun insertPurchase(value:PurchaseEntity); @Insert suspend fun insertLines(values:List<PurchaseLineEntity>) }
+import androidx.room.Query
+@Dao interface PurchaseDao { @Insert suspend fun insertPurchase(value:PurchaseEntity); @Insert suspend fun insertLines(values:List<PurchaseLineEntity>)
+ @Query("SELECT COUNT(*) FROM purchases") fun purchasesCount(): kotlinx.coroutines.flow.Flow<Int>
+ @Query("SELECT COALESCE(SUM(totalMinorUnits),0) FROM purchases") fun purchasesTotal(): kotlinx.coroutines.flow.Flow<Long> }
