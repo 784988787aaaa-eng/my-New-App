@@ -59,14 +59,17 @@ class MoreViewModel(application: Application) : AndroidViewModel(application) {
                 BackupWriter.write(output, database, manifest)
                 require(BackupIntegrity.validateArchive(output))
                 output.absolutePath
-            }.onSuccess {
+            }
+        }
+    }
+
+    fun restoreBackup(uri: Uri, resolver: ContentResolver) {
                 backupPath = it
                 message = getApplication<Application>().getString(R.string.backup_created)
             }.onFailure {
                 message = it.message ?: getApplication<Application>().getString(R.string.backup_failed)
             }
         }
-    fun restoreBackup(uri: Uri, resolver: ContentResolver) {
         viewModelScope.launch {
             runCatching {
                 val context = getApplication<Application>()
