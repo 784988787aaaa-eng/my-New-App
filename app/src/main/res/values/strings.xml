@@ -105,6 +105,7 @@
     <string name="restore_success">تمت الاستعادة بنجاح وسيُعاد تشغيل التطبيق للتحقق من الحالة الجديدة.</string>
     <string name="restore_failed">فشلت الاستعادة</string>
     <string name="business_management">إدارة النشاط</string>
+    <string name="invoice_history">الفواتير</string>
     <string name="delete_account">نقل الحساب إلى سلة المحذوفات</string>
     <string name="share">مشاركة</string>
     <string name="search_inventory">ابحث عن صنف</string>
