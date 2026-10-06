@@ -3,11 +3,9 @@ package com.smartledger.app.ui.operations
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Room
-import com.smartledger.core.database.DatabaseMigrations
 import com.smartledger.core.database.OperationRepository
 import com.smartledger.core.database.PersonEntity
-import com.smartledger.core.database.SmartLedgerDatabase
+import com.smartledger.app.data.AppDatabaseProvider
 import com.smartledger.core.domain.FinancialDirection
 import com.smartledger.core.domain.MoneyParser
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,8 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class OperationViewModel(application: Application) : AndroidViewModel(application) {
-    private val db = Room.databaseBuilder(application, SmartLedgerDatabase::class.java, "smart_ledger.db")
-        .addMigrations(DatabaseMigrations.MIGRATION_1_2, DatabaseMigrations.MIGRATION_2_3, DatabaseMigrations.MIGRATION_3_4).build()
+    private val db = AppDatabaseProvider.get(application)
     private val repository = OperationRepository(db)
     val people: StateFlow<List<PersonEntity>> = db.personDao().observePeople()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -29,5 +26,5 @@ class OperationViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    override fun onCleared() { db.close(); super.onCleared() }
+
 }
