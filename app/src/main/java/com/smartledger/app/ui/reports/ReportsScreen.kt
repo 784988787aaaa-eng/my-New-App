@@ -106,6 +106,7 @@ fun ReportsScreen(viewModel: ReportsViewModel = viewModel()) {
         }
     }
     selectedReport?.let { report ->
+        val reportTitle = stringResource(report)
         val detail = when (report) {
             R.string.report_people -> stringResource(R.string.report_people_detail, state.people)
             R.string.report_sales -> stringResource(R.string.report_sales_detail, state.sales, MoneyFormatter.formatMinorUnits(state.salesTotal, currency))
@@ -120,8 +121,8 @@ fun ReportsScreen(viewModel: ReportsViewModel = viewModel()) {
                 Text(detail)
             },
             confirmButton = { Row {
-                TextButton(onClick = { ReportExporter.sharePdf(context, stringResource(report), listOf(detail)) }) { Text("PDF") }
-                TextButton(onClick = { ReportExporter.shareExcelCsv(context, listOf(listOf("التقرير","البيانات"), listOf(stringResource(report), detail))) }) { Text("Excel") }
+                TextButton(onClick = { ReportExporter.sharePdf(context, reportTitle, listOf(detail)) }) { Text("PDF") }
+                TextButton(onClick = { ReportExporter.shareExcelCsv(context, listOf(listOf("التقرير","البيانات"), listOf(reportTitle, detail))) }) { Text("Excel") }
                 TextButton(onClick = { context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, detail) }, "مشاركة التقرير")) }) { Text(stringResource(R.string.share)) }
                 TextButton(onClick = { selectedReport = null }) { Text(stringResource(R.string.close)) }
             } }
