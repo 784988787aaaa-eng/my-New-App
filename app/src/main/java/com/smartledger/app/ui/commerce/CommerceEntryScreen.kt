@@ -43,7 +43,7 @@ class CommerceEntryViewModel(application: Application) : AndroidViewModel(applic
                     val total = saleLines.sumOf { it.unitPrice.minorUnits * it.quantity }
                     require(paid in 0..total)
                     CommerceRepository(db).recordSale(
-                        Sale(UUID.randomUUID().toString(), personId, saleLines, Money.fromDecimal(java.math.BigDecimal.valueOf(paid, 2))),
+                        Sale(UUID.randomUUID().toString(), personId, saleLines, Money.fromMinorUnits(paid)),
                         System.currentTimeMillis()
                     )
                 } else {
