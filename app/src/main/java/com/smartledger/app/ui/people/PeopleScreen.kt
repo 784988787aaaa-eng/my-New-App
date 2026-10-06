@@ -105,6 +105,8 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
             AccountActionsDialog(
                 personName = person.name,
                 onDismiss = { selectedPersonId = null },
+                onStatement = { viewModel.loadStatement(id) { statementEntries = it }; statementPersonId = id },
+                onDelete = { viewModel.deletePerson(id) { selectedPersonId = null } },
                 onSave = { direction, amount, note, payment ->
                     if (payment) viewModel.addPayment(id, direction, amount, note) { selectedPersonId = null }
                     else viewModel.addOperation(id, direction, amount, note) { selectedPersonId = null }
@@ -128,6 +130,8 @@ private fun BalancePill(modifier: Modifier, title: String, amount: String, conta
 private fun AccountActionsDialog(
     personName: String,
     onDismiss: () -> Unit,
+    onStatement: () -> Unit,
+    onDelete: () -> Unit,
     onSave: (FinancialDirection, String, String, Boolean) -> Unit
 ) {
     var direction by remember { mutableStateOf(FinancialDirection.RECEIVABLE) }
@@ -180,3 +184,4 @@ private fun AddPersonDialog(onDismiss: () -> Unit, onSave: (String, String?, Str
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
     )
 }
+
