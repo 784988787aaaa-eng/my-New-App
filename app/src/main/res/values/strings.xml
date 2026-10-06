@@ -101,4 +101,7 @@
     <string name="remove">حذف</string>
     <string name="account_statement">كشف الحساب</string>
     <string name="no_statement_entries">لا توجد حركة مالية لهذا الحساب.</string>
+    <string name="restore_backup">استعادة نسخة احتياطية</string>
+    <string name="restore_success">تمت الاستعادة بنجاح وسيُعاد تشغيل التطبيق للتحقق من الحالة الجديدة.</string>
+    <string name="restore_failed">فشلت الاستعادة</string>
 </resources>
