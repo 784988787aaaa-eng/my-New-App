@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.smartledger.app.ui.people
 
 import androidx.compose.foundation.BorderStroke
@@ -154,32 +156,44 @@ private fun AccountActionsDialog(
     var amount by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
     var payment by remember { mutableStateOf(false) }
-    AlertDialog(
+    ModalBottomSheet(
         onDismissRequest = onDismiss,
-        title = { Text(personName) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(SmartLedgerDimens.FormGap)) {
-                Text(stringResource(R.string.account_action_hint), color = SmartLedgerColors.TextSecondary)
-                OutlinedButton(onClick = onStatement, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.account_statement)) }
-                OutlinedButton(onClick = onDelete, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.delete_account)) }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilterChip(!payment, { payment = false }, label = { Text(stringResource(R.string.register_new_debt)) })
-                    FilterChip(payment, { payment = true }, label = { Text(stringResource(R.string.register_payment)) })
-                }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilterChip(direction == FinancialDirection.RECEIVABLE, { direction = FinancialDirection.RECEIVABLE }, label = { Text(stringResource(R.string.register_receivable)) })
-                    FilterChip(direction == FinancialDirection.PAYABLE, { direction = FinancialDirection.PAYABLE }, label = { Text(stringResource(R.string.register_payable)) })
-                }
-                OutlinedTextField(amount, { amount = it }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.operation_amount)) }, singleLine = true)
-                OutlinedTextField(note, { note = it }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.operation_note)) }, minLines = 2)
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ) {
+        Column(
+            Modifier.fillMaxWidth().navigationBarsPadding().imePadding().padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(SmartLedgerDimens.FormGap)
+        ) {
+            Text(personName, style = MaterialTheme.typography.headlineSmall)
+            Text(stringResource(R.string.account_action_hint), color = SmartLedgerColors.TextSecondary)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                OutlinedButton(onClick = onStatement, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.account_statement)) }
+                OutlinedButton(onClick = onDelete, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.delete_account)) }
             }
-        },
-        confirmButton = {
-            Button(onClick = { onSave(direction, amount, note, payment) }, enabled = amount.isNotBlank()) { Text(stringResource(R.string.save)) }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
-    )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                FilterChip(!payment, { payment = false }, label = { Text(stringResource(R.string.register_new_debt)) })
+                FilterChip(payment, { payment = true }, label = { Text(stringResource(R.string.register_payment)) })
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                FilterChip(direction == FinancialDirection.RECEIVABLE, { direction = FinancialDirection.RECEIVABLE }, label = { Text(stringResource(R.string.register_receivable)) })
+                FilterChip(direction == FinancialDirection.PAYABLE, { direction = FinancialDirection.PAYABLE }, label = { Text(stringResource(R.string.register_payable)) })
+            }
+            OutlinedTextField(amount, { amount = latinDigits(it) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.operation_amount)) }, singleLine = true)
+            OutlinedTextField(note, { note = it }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.operation_note)) }, minLines = 2)
+            Button(
+                onClick = { onSave(direction, amount, note, payment) },
+                enabled = amount.isNotBlank(),
+                modifier = Modifier.fillMaxWidth()
+            ) { Icon(Icons.Outlined.Save, null); Spacer(Modifier.width(8.dp)); Text(stringResource(R.string.save)) }
+            TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.cancel)) }
+            Spacer(Modifier.height(8.dp))
+        }
+    }
 }
+private fun latinDigits(value: String): String = value
+    .replace("٠","0").replace("١","1").replace("٢","2").replace("٣","3").replace("٤","4")
+    .replace("٥","5").replace("٦","6").replace("٧","7").replace("٨","8").replace("٩","9")
 
 @Composable
 private fun AddPersonDialog(onDismiss: () -> Unit, onSave: (String, String?, String?) -> Unit) {
