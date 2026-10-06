@@ -93,4 +93,6 @@
     <string name="paid_amount">المدفوع</string>
     <string name="invoice_total">الإجمالي</string>
     <string name="outstanding_amount">المتبقي</string>
+    <string name="register_new_debt">تسجيل جديد</string>
+    <string name="register_payment">تسجيل سداد</string>
 </resources>
