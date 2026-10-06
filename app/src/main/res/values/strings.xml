@@ -61,4 +61,5 @@
     <string name="cancel">إلغاء</string>
     <string name="save">حفظ</string>
     <string name="no_people">لا توجد حسابات بعد</string>
+    <string name="coming_soon">سيتم تفعيل هذه الوحدة في المرحلة التالية</string>
 </resources>
