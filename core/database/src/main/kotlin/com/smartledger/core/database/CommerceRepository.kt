@@ -2,6 +2,8 @@ package com.smartledger.core.database
 
 import androidx.room.withTransaction
 import com.smartledger.core.domain.Sale
+import com.smartledger.core.domain.FinancialDirection
+import com.smartledger.core.domain.Money
 import java.util.UUID
 
 class CommerceRepository(private val db: SmartLedgerDatabase) {
@@ -13,6 +15,9 @@ class CommerceRepository(private val db: SmartLedgerDatabase) {
             db.commerceDao().insertSaleLines(sale.lines.mapIndexed { i, line -> SaleLineEntity(sale.id, i, line.productId, line.quantity, line.unitPrice.minorUnits) })
             sale.lines.forEach { line ->
                 db.productDao().insertMovement(StockMovementEntity(UUID.randomUUID().toString(), line.productId, line.quantity, "SALE", sale.id, createdAt))
+            }
+            if (sale.personId != null && sale.outstanding().minorUnits > 0) {
+                db.operationDao().insert(OperationEntity(UUID.randomUUID().toString(), sale.personId, FinancialDirection.RECEIVABLE.name, sale.outstanding().minorUnits, "مبلغ مستحق من البيع " + sale.id, createdAt))
             }
         }
     }
