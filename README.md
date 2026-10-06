@@ -99,7 +99,7 @@ REPORT
 - Room
 - DataStore
 - WorkManager
-- Hilt
+- ViewModel / direct dependency construction where appropriate (Hilt removed because the current app has no DI graph requiring it)
 - Android Keystore
 - Kotlin Serialization أو بديل مضبوط عند الحاجة
 
@@ -700,15 +700,15 @@ NEXT:
 | Requirement | Status | Evidence | Test | Notes |
 |---|---|---|---|---|
 | RTL | NEEDS_VERIFICATION | — | — | Baseline pending |
-| Balance | NEEDS_VERIFICATION | — | — | Domain implementation pending |
-| Inventory | NEEDS_VERIFICATION | — | — | Domain implementation pending |
+| Balance | PARTIAL | Room aggregates + domain calculator | Unit + CI | Per-account totals now visible; payment semantics still expanding |
+| Inventory | PARTIAL | Room products + stock movements | Unit + CI | Product creation active; purchase/sale UI still expanding |
 | Sales | NEEDS_VERIFICATION | — | — | Feature pending |
 | Purchases | NEEDS_VERIFICATION | — | — | Feature pending |
 | Reports | NEEDS_VERIFICATION | — | — | Document architecture pending |
 | Backup | NEEDS_VERIFICATION | — | — | Backup architecture pending |
 | Restore | NEEDS_VERIFICATION | — | — | Restore flow pending |
-| Permissions | NEEDS_VERIFICATION | — | — | Auth foundation pending |
-| Audit | NEEDS_VERIFICATION | — | — | Audit architecture pending |
+| Permissions | PARTIAL | Domain role matrix | Unit + CI | UI enforcement still expanding |
+| Audit | PARTIAL | Audit domain/data model | — | Critical mutation wiring still expanding |
 | Privacy | NEEDS_VERIFICATION | — | — | Security foundation pending |
 | Keyboard | NEEDS_VERIFICATION | — | — | UX foundation pending |
 | Accessibility | NEEDS_VERIFICATION | — | — | QA foundation pending |
@@ -779,7 +779,7 @@ Inspect
 
 ## 27. Known Limitations
 
-المشروع تجاوز مرحلة الـPrototype: توجد الآن طبقات Domain/Data وRoom وHilt وCI واختبارات، لكن بوابة التسليم التجاري النهائية ما زالت تتطلب Runtime/Visual QA وRelease Build ودورة استعادة Backup فعلية.
+المشروع تجاوز مرحلة الـPrototype: توجد الآن طبقات Domain/Data وRoom وCI واختبارات، مع مسارات فعلية للحسابات والعمليات والمخزون والعملة والنسخ الاحتياطي، لكن بوابة التسليم التجاري النهائية ما زالت تتطلب Runtime/Visual QA وRelease Build ودورة استعادة Backup فعلية.
 
 - Runtime وVisual QA إنتاجيان مثبتان
 - Release Build/Signing نهائي مثبتان
@@ -867,5 +867,5 @@ Inspect
 
 ---
 
-**الحالة الحالية:** `NEEDS_VERIFICATION`  
+**الحالة الحالية:** `PARTIAL / NEEDS_VERIFICATION`  
 **القاعدة:** Architecture First · Design System First · Domain First · Test First · Evidence First
