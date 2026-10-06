@@ -82,7 +82,7 @@ fun CommerceEntryScreen(mode: CommerceMode, onSaved: () -> Unit, viewModel: Comm
         val p = products.firstOrNull { it.id == line.productId } ?: return@sumOf 0L
         (if (mode == CommerceMode.SALE) p.priceMinorUnits else p.costMinorUnits) * line.quantity
     }
-    val paidValue = paid.toLongOrNull() ?: 0L
+    val paidValue = paid.trim().takeIf { it.isNotBlank() }?.let { runCatching { MoneyParser.parse(it).minorUnits }.getOrDefault(0L) } ?: 0L
 
     LazyColumn(modifier = Modifier.fillMaxSize().imePadding(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item { Text(if (mode == CommerceMode.SALE) stringResource(R.string.new_sale) else stringResource(R.string.new_purchase), style = MaterialTheme.typography.headlineLarge) }
@@ -98,7 +98,7 @@ fun CommerceEntryScreen(mode: CommerceMode, onSaved: () -> Unit, viewModel: Comm
         item {
             Button(onClick = {
                 productId?.let { id ->
-                    val q = quantity.toLongOrNull() ?: 0L
+                    val q = quantity.trim().takeIf { it.isNotBlank() }?.let { runCatching { MoneyParser.parse(it, 0).minorUnits }.getOrDefault(0L) } ?: 0L
                     if (q > 0L) { lines = lines + DraftLine(id, q); productId = null; quantity = "1" }
                 }
             }, enabled = productId != null && (quantity.toLongOrNull() ?: 0L) > 0L, modifier = Modifier.fillMaxWidth()) {
@@ -128,8 +128,8 @@ fun CommerceEntryScreen(mode: CommerceMode, onSaved: () -> Unit, viewModel: Comm
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(R.string.invoice_total), style = MaterialTheme.typography.titleMedium)
-                    Text(total.toString() + " " + stringResource(R.string.currency_yer), style = MaterialTheme.typography.headlineSmall)
-                    Text(stringResource(R.string.outstanding_amount) + ": " + (total - paidValue).coerceAtLeast(0L).toString())
+                    Text(MoneyFormatter.formatMinorUnits(total, SupportedCurrencies.YER), style = MaterialTheme.typography.headlineSmall)
+                    Text(stringResource(R.string.outstanding_amount) + ": " + MoneyFormatter.formatMinorUnits((total - paidValue).coerceAtLeast(0L), SupportedCurrencies.YER))
                 }
             }
         }
