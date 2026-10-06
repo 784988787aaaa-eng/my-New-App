@@ -16,7 +16,9 @@ import com.smartledger.core.database.OperationRepository
 import com.smartledger.core.domain.FinancialDirection
 import com.smartledger.core.domain.MoneyParser
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch\nimport androidx.room.withTransaction\nimport java.util.UUID
+import kotlinx.coroutines.launch
+import androidx.room.withTransaction
+import java.util.UUID
 
 class PeopleViewModel(application: Application) : AndroidViewModel(application) {
     private val database = Room.databaseBuilder(
@@ -49,7 +51,11 @@ class PeopleViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun loadStatement(personId: String, onLoaded: (List<com.smartledger.core.database.DirectionAmount>) -> Unit) {\n        viewModelScope.launch { onLoaded(database.operationDao().entries(personId)) }\n    }\n\n    fun addPayment(personId: String, direction: FinancialDirection, amount: String, note: String?, onDone: () -> Unit = {}) {
+    fun loadStatement(personId: String, onLoaded: (List<com.smartledger.core.database.DirectionAmount>) -> Unit) {
+        viewModelScope.launch { onLoaded(database.operationDao().entries(personId)) }
+    }
+
+    fun addPayment(personId: String, direction: FinancialDirection, amount: String, note: String?, onDone: () -> Unit = {}) {
         viewModelScope.launch {
             runCatching {
                 operationRepository.payment(personId, direction, MoneyParser.parse(amount), note?.ifBlank { null }, System.currentTimeMillis())
