@@ -28,6 +28,7 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
     var selectedPersonId by remember { mutableStateOf<String?>(null) }
     var statementPersonId by remember { mutableStateOf<String?>(null) }
     var statementEntries by remember { mutableStateOf<List<com.smartledger.core.database.DirectionAmount>>(emptyList()) }
+    var searchOpen by remember { mutableStateOf(false) }
     val people by viewModel.people.collectAsState()
     val balances by viewModel.balances.collectAsState()
     val currency by viewModel.currency.collectAsState(initial = SupportedCurrencies.YER)
@@ -41,7 +42,10 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
     ) {
         item {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(stringResource(R.string.accounts), style = MaterialTheme.typography.headlineLarge)
+                Row(horizontalArrangement = Arrangement.spacedBy(2.dp), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                    Text(stringResource(R.string.accounts), style = MaterialTheme.typography.headlineLarge)
+                    IconButton(onClick = { searchOpen = !searchOpen }) { Icon(Icons.Outlined.Search, stringResource(R.string.search_people)) }
+                }
                 FilledTonalButton(onClick = { showAdd = true }) {
                     Icon(Icons.Outlined.PersonAdd, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
@@ -49,13 +53,12 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
                 }
             }
         }
-        item {
+        if (searchOpen) item {
             OutlinedTextField(
-                value = query,
-                onValueChange = { query = it },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
+                value = query, onValueChange = { query = it },
+                modifier = Modifier.fillMaxWidth(), singleLine = true,
+                leadingIcon = { Icon(Icons.Outlined.Search, null) },
+                trailingIcon = { IconButton(onClick = { query = ""; searchOpen = false }) { Icon(Icons.Outlined.Close, null) } },
                 placeholder = { Text(stringResource(R.string.search_people)) }
             )
         }
@@ -83,10 +86,15 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
                         }
                         Icon(Icons.Outlined.ChevronLeft, contentDescription = stringResource(R.string.open_account))
                     }
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        BalancePill(Modifier.weight(1f), stringResource(R.string.total_receivable), MoneyFormatter.formatMinorUnits(balance?.receivable ?: 0, currency), SmartLedgerColors.SuccessContainer, SmartLedgerColors.Success)
-                        BalancePill(Modifier.weight(1f), stringResource(R.string.total_payable), MoneyFormatter.formatMinorUnits(balance?.payable ?: 0, currency), SmartLedgerColors.DangerContainer, SmartLedgerColors.Danger)
-                    }
+                    val receivable = balance?.receivable ?: 0L
+                    val payable = balance?.payable ?: 0L
+                    val isReceivable = receivable > 0L
+                    val isPayable = payable > 0L
+                    val amount = if (isReceivable) receivable else if (isPayable) payable else 0L
+                    val title = if (isReceivable) stringResource(R.string.smart_receivable) else if (isPayable) stringResource(R.string.smart_payable) else stringResource(R.string.balance_neutral)
+                    val tint = if (isReceivable) SmartLedgerColors.Success else if (isPayable) SmartLedgerColors.Danger else SmartLedgerColors.TextSecondary
+                    val container = if (isReceivable) SmartLedgerColors.SuccessContainer else if (isPayable) SmartLedgerColors.DangerContainer else SmartLedgerColors.SurfaceMuted
+                    BalancePill(Modifier.fillMaxWidth(), title, MoneyFormatter.formatMinorUnits(amount, currency), container, tint)
                 }
             }
         }
