@@ -29,24 +29,36 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 data class ReportsState(val receivable: Long, val payable: Long, val people: Int, val products: Int, val sales: Int, val purchases: Int, val salesTotal: Long, val purchasesTotal: Long)
+private data class CoreReportState(val receivable: Long, val payable: Long, val people: Int, val products: Int)
+private data class CommerceReportState(val sales: Int, val purchases: Int, val salesTotal: Long, val purchasesTotal: Long)
 
 class ReportsViewModel(application: Application) : AndroidViewModel(application) {
     private val db = Room.databaseBuilder(application, SmartLedgerDatabase::class.java, "smart_ledger.db")
         .addMigrations(DatabaseMigrations.MIGRATION_1_2, DatabaseMigrations.MIGRATION_2_3).build()
     private val core = combine(
         db.operationDao().totalReceivable(),
-        db.operationDao().totalPayable(),
+        db.operationDao().totalPayable()
+    ) { r, p -> r to p }
+    private val counts = combine(
         db.personDao().observePeople(),
         db.productDao().observeProducts()
-    ) { r, p, people, products -> Triple(ReportsState(r, p, people.size, products.size, 0, 0, 0, 0), Unit) }
-    private val commerce = combine(
+    ) { people, products -> people.size to products.size }
+    private val coreState = combine(core, counts) { money, countsValue ->
+        CoreReportState(money.first, money.second, countsValue.first, countsValue.second)
+    }
+    private val commerceState = combine(
         db.commerceDao().salesCount(),
-        db.purchaseDao().purchasesCount(),
+        db.purchaseDao().purchasesCount()
+    ) { sales, purchases -> sales to purchases }
+    private val commerceTotals = combine(
         db.commerceDao().salesTotal(),
         db.purchaseDao().purchasesTotal()
-    ) { sales, purchases, salesTotal, purchasesTotal -> longArrayOf(sales.toLong(), purchases.toLong(), salesTotal, purchasesTotal) }
-    val state = combine(core, commerce) { coreState, values ->
-        coreState.first.copy(sales = values[0].toInt(), purchases = values[1].toInt(), salesTotal = values[2], purchasesTotal = values[3])
+    ) { salesTotal, purchasesTotal -> salesTotal to purchasesTotal }
+    private val commerce = combine(commerceState, commerceTotals) { countsValue, totals ->
+        CommerceReportState(countsValue.first, countsValue.second, totals.first, totals.second)
+    }
+    val state = combine(coreState, commerce) { coreValue, commerceValue ->
+        ReportsState(coreValue.receivable, coreValue.payable, coreValue.people, coreValue.products, commerceValue.sales, commerceValue.purchases, commerceValue.salesTotal, commerceValue.purchasesTotal)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ReportsState(0, 0, 0, 0, 0, 0, 0, 0))
     val currency = CurrencyPreferences(application).currency
     override fun onCleared() { db.close(); super.onCleared() }
