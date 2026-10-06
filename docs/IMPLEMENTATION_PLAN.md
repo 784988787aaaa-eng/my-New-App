@@ -18,13 +18,17 @@ Status: PARTIAL
 - Remaining: Hilt, Room, Navigation, error model, localization architecture, test harness.
 
 ## Phase 2 — Identity/Auth
-Status: MISSING
+Status: PARTIAL
+- Role/permission policy and secure local secret foundation implemented.
+- Remaining: complete UI auth/session/re-auth flows.
 - First launch
 - secure credentials
 - users/roles/permissions
 
 ## Phase 3 — Core Domain
-Status: MISSING
+Status: PARTIAL
+- Money, balance, people, operations, sales/purchases, inventory, expenses, employees and audit/recycle foundations implemented.
+- Remaining: complete end-to-end statement projection and feature UI.
 - Books
 - People
 - Operations
@@ -32,7 +36,9 @@ Status: MISSING
 - Statements
 
 ## Phase 4 — Inventory
-Status: MISSING
+Status: PARTIAL
+- Products and atomic stock movement foundations implemented.
+- Remaining: units/conversion, inventory UI and reconciliation.
 - Products
 - Units
 - Conversion
@@ -40,7 +46,9 @@ Status: MISSING
 - Alerts
 
 ## Phase 5 — Commerce
-Status: MISSING
+Status: PARTIAL
+- Atomic sale/purchase persistence and exact totals implemented.
+- Remaining: invoice UI, returns, payment workflows and E2E.
 - Sales
 - Purchases
 - Invoices
@@ -54,7 +62,9 @@ Status: MISSING
 Status: MISSING
 
 ## Phase 8 — Backup/Security/Audit
-Status: MISSING
+Status: PARTIAL
+- Keystore, role policy, backup naming/writer, audit/recycle persistence implemented.
+- Remaining: validated restore workflow and UI.
 
 ## Phase 9 — UX Excellence
 Status: PARTIAL
