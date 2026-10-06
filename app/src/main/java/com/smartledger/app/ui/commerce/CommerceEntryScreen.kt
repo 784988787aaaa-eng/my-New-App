@@ -54,7 +54,7 @@ class CommerceEntryViewModel(application: Application) : AndroidViewModel(applic
                     val total = purchaseLines.sumOf { it.unitCost.minorUnits * it.quantity }
                     require(paid in 0..total)
                     PurchaseRepository(db).recordPurchase(
-                        PurchaseReceipt(UUID.randomUUID().toString(), personId, purchaseLines, Money.fromDecimal(java.math.BigDecimal.valueOf(paid, 2))),
+                        PurchaseReceipt(UUID.randomUUID().toString(), personId, purchaseLines, Money.fromMinorUnits(paid)),
                         System.currentTimeMillis()
                     )
                 }
