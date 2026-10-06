@@ -123,7 +123,10 @@ fun ReportsScreen(viewModel: ReportsViewModel = viewModel()) {
                     }
                 )
             },
-            confirmButton = { Row {\n                TextButton(onClick = { context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, reportText.ifBlank { stringResource(report) }) }, "مشاركة التقرير")) }) { Text(stringResource(R.string.share)) }\n                TextButton(onClick = { selectedReport = null }) { Text(stringResource(R.string.close)) }\n            } }
+            confirmButton = { Row {
+                TextButton(onClick = { context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, reportText.ifBlank { stringResource(report) }) }, "مشاركة التقرير")) }) { Text(stringResource(R.string.share)) }
+                TextButton(onClick = { selectedReport = null }) { Text(stringResource(R.string.close)) }
+            } }
         )
     }
 }
