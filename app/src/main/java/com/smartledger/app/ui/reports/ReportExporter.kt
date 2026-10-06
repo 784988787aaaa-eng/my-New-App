@@ -40,7 +40,7 @@ object ReportExporter {
         share(context, file, "text/csv")
     }
 
-    private fun csv(value: String): String = """ + value.replace(""", """") + """
+    private fun csv(value: String): String = "\"" + value.replace("\"", "\"\"") + "\""
 
     private fun share(context: Context, file: File, type: String) {
         val uri = FileProvider.getUriForFile(context, context.packageName + ".files", file)
