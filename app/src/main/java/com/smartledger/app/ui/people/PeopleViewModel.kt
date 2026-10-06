@@ -8,6 +8,8 @@ import com.smartledger.app.data.PeopleRepository
 import com.smartledger.app.data.CurrencyPreferences
 import com.smartledger.core.database.DatabaseMigrations
 import com.smartledger.core.database.PersonEntity
+import com.smartledger.core.database.RecycleBinEntity
+import com.smartledger.core.database.AuditLogEntity
 import com.smartledger.core.database.SmartLedgerDatabase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
