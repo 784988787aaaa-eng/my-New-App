@@ -1,9 +1,7 @@
 package com.smartledger.app.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Typography
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -29,79 +27,43 @@ object SmartLedgerColors {
     val WarningContainer = Color(0xFFFFF3DF)
     val Info = Color(0xFF376DAD)
 }
-
 object SmartLedgerDimens {
-    val Screen = 20.dp
-    val Section = 24.dp
-    val Card = 16.dp
-    val Field = 14.dp
-    val Row = 56.dp
+    val Screen = 16.dp
+    val Section = 18.dp
+    val Card = 12.dp
+    val Field = 12.dp
+    val Row = 52.dp
     val TouchTarget = 48.dp
     val Icon = 24.dp
     val SmallIcon = 20.dp
     val Radius = 16.dp
     val RadiusSmall = 12.dp
-    val FormGap = 12.dp
+    val FormGap = 9.dp
     val Border = 1.dp
 }
-
 private val SmartLedgerTypography = Typography(
-    headlineLarge = androidx.compose.material3.Typography().headlineLarge.copy(
-        fontSize = 28.sp,
-        lineHeight = 36.sp,
-        fontWeight = FontWeight.Bold
-    ),
-    headlineSmall = androidx.compose.material3.Typography().headlineSmall.copy(
-        fontSize = 21.sp,
-        lineHeight = 28.sp,
-        fontWeight = FontWeight.Bold
-    ),
-    titleMedium = androidx.compose.material3.Typography().titleMedium.copy(
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        fontWeight = FontWeight.SemiBold
-    ),
-    bodyLarge = androidx.compose.material3.Typography().bodyLarge.copy(
-        fontSize = 15.sp,
-        lineHeight = 24.sp
-    ),
-    bodyMedium = androidx.compose.material3.Typography().bodyMedium.copy(
-        fontSize = 14.sp,
-        lineHeight = 22.sp
-    ),
-    labelLarge = androidx.compose.material3.Typography().labelLarge.copy(
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        fontWeight = FontWeight.SemiBold
-    )
+    headlineLarge = Typography().headlineLarge.copy(fontSize = 25.sp, lineHeight = 32.sp, fontWeight = FontWeight.Bold),
+    headlineSmall = Typography().headlineSmall.copy(fontSize = 20.sp, lineHeight = 26.sp, fontWeight = FontWeight.Bold),
+    titleLarge = Typography().titleLarge.copy(fontSize = 18.sp, lineHeight = 24.sp, fontWeight = FontWeight.Bold),
+    titleMedium = Typography().titleMedium.copy(fontSize = 15.sp, lineHeight = 21.sp, fontWeight = FontWeight.SemiBold),
+    bodyLarge = Typography().bodyLarge.copy(fontSize = 15.sp, lineHeight = 22.sp),
+    bodyMedium = Typography().bodyMedium.copy(fontSize = 13.sp, lineHeight = 19.sp),
+    labelLarge = Typography().labelLarge.copy(fontSize = 13.sp, lineHeight = 18.sp, fontWeight = FontWeight.SemiBold)
 )
-
 private val LightColors = lightColorScheme(
-    primary = SmartLedgerColors.Blue600,
-    onPrimary = Color.White,
-    primaryContainer = SmartLedgerColors.Blue100,
-    onPrimaryContainer = SmartLedgerColors.Navy900,
-    background = SmartLedgerColors.Background,
-    onBackground = SmartLedgerColors.TextPrimary,
-    surface = SmartLedgerColors.Surface,
-    onSurface = SmartLedgerColors.TextPrimary,
-    surfaceVariant = SmartLedgerColors.SurfaceMuted,
-    onSurfaceVariant = SmartLedgerColors.TextSecondary,
-    outline = SmartLedgerColors.Border,
-    error = SmartLedgerColors.Danger,
-    onError = Color.White,
-    errorContainer = SmartLedgerColors.DangerContainer,
-    onErrorContainer = SmartLedgerColors.Danger
+    primary = SmartLedgerColors.Blue600, onPrimary = Color.White,
+    primaryContainer = SmartLedgerColors.Blue100, onPrimaryContainer = SmartLedgerColors.Navy900,
+    background = SmartLedgerColors.Background, onBackground = SmartLedgerColors.TextPrimary,
+    surface = SmartLedgerColors.Surface, onSurface = SmartLedgerColors.TextPrimary,
+    surfaceVariant = SmartLedgerColors.SurfaceMuted, onSurfaceVariant = SmartLedgerColors.TextSecondary,
+    outline = SmartLedgerColors.Border, error = SmartLedgerColors.Danger, onError = Color.White,
+    errorContainer = SmartLedgerColors.DangerContainer, onErrorContainer = SmartLedgerColors.Danger
 )
-
 @Composable
-fun SmartLedgerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
-    MaterialTheme(
-        colorScheme = LightColors,
-        typography = SmartLedgerTypography,
-        content = content
-    )
+fun SmartLedgerTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+    MaterialTheme(colorScheme = LightColors, typography = SmartLedgerTypography, shapes = Shapes(
+        small = androidx.compose.foundation.shape.RoundedCornerShape(SmartLedgerDimens.RadiusSmall),
+        medium = androidx.compose.foundation.shape.RoundedCornerShape(SmartLedgerDimens.Radius),
+        large = androidx.compose.foundation.shape.RoundedCornerShape(20.dp)
+    ), content = content)
 }
