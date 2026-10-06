@@ -17,4 +17,5 @@ value class Money private constructor(val minorUnits: Long) {
 
     operator fun plus(other: Money): Money = Money(minorUnits + other.minorUnits)
     operator fun minus(other: Money): Money = Money(minorUnits - other.minorUnits)
+    operator fun times(multiplier: Long): Money = Money(minorUnits * multiplier)
 }
