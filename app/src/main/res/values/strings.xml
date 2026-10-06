@@ -42,4 +42,11 @@
     <string name="backup_restore">النسخ الاحتياطي والاستعادة</string>
     <string name="security_privacy">الأمان والخصوصية</string>
     <string name="user_permissions">المستخدمون والصلاحيات</string>
+
+    <string name="person_name">اسم الشخص</string>
+    <string name="person_phone">رقم الهاتف</string>
+    <string name="person_note">ملاحظة</string>
+    <string name="cancel">إلغاء</string>
+    <string name="save">حفظ</string>
+    <string name="no_people">لا توجد حسابات بعد</string>
 </resources>
