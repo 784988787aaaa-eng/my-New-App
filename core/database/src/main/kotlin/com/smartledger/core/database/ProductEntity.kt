@@ -10,6 +10,8 @@ data class ProductEntity(
     val name: String,
     val sku: String?,
     val unitId: String,
+    val secondaryUnitId: String? = null,
+    val conversionFactor: Long = 1,
     val costMinorUnits: Long,
     val priceMinorUnits: Long,
     val minimumStock: Long,
