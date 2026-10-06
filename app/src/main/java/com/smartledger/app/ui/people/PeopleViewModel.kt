@@ -10,6 +10,7 @@ import com.smartledger.core.database.PersonEntity
 import com.smartledger.core.database.SmartLedgerDatabase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import com.smartledger.core.database.PersonBalanceRow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -22,6 +23,9 @@ class PeopleViewModel(application: Application) : AndroidViewModel(application) 
     private val repository = PeopleRepository(database.personDao())
 
     val people: StateFlow<List<PersonEntity>> = repository.observe()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val balances: StateFlow<List<PersonBalanceRow>> = database.personDao().observeBalances()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     fun addPerson(name: String, phone: String?, note: String?) {
