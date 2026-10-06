@@ -3,7 +3,7 @@
 PHASE: 10 — QA / Release Candidate
 DATE: 2026-10-06
 BASE: main
-HEAD: 7b8320b4ea0f36371793d3bc1f37f96520264f40
+HEAD: f478a7ac68b89491c9af63e281751479bfe22610
 STATUS: NEEDS_VERIFICATION
 
 ## Implemented
@@ -40,8 +40,8 @@ Use only IMPLEMENTED / PARTIAL / MISSING / BROKEN / NEEDS_VERIFICATION / BLOCKED
 No production-readiness claim is made until the release checklist and evidence gates pass.
 
 ## Final acceptance gate — 2026-10-06
-- CI: PASS — GitHub Actions run 171 passed Unit Tests and Debug/Release build pipeline.
-- Release APK/AAB: NEEDS_VERIFICATION; CI certificate is experimental, not production Play signing.
+- CI: PASS — GitHub Actions run 188 passed Unit Tests and Debug/Release build pipeline.
+- Release APK: CI artifact `smart-ledger-release-apk`, SHA-256 `e037c8f3bd0398b3914c7bdfe02f3b607bfd6319a3ad87660945b66219d5f8a5`; certificate is experimental, not production Play signing.
 - Runtime/device QA: NEEDS_VERIFICATION; no authorized Android runtime device is connected in this session.
 - Visual/accessibility/performance QA: NEEDS_VERIFICATION.
 - Backup/restore full-cycle: PARTIAL; backup creation/integrity is implemented, full Room restore cycle remains.
