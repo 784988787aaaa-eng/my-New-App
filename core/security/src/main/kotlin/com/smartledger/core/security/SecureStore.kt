@@ -31,6 +31,8 @@ class SecureStore(private val context: Context) {
         prefs.edit().putString(name, Base64.encodeToString(cipher.iv + encrypted, Base64.NO_WRAP)).apply()
     }
 
+    fun remove(name: String) { prefs.edit().remove(name).apply() }
+
     fun get(name: String): String? = prefs.getString(name, null)?.let {
         val raw = Base64.decode(it, Base64.NO_WRAP)
         val iv = raw.copyOfRange(0, 12)
