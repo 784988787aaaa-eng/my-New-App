@@ -107,4 +107,12 @@
     <string name="business_management">إدارة النشاط</string>
     <string name="delete_account">نقل الحساب إلى سلة المحذوفات</string>
     <string name="share">مشاركة</string>
+    <string name="search_inventory">ابحث عن صنف</string>
+    <string name="primary_unit">الوحدة الأساسية</string>
+    <string name="secondary_unit_optional">وحدة كبرى (اختياري)</string>
+    <string name="unit_conversion">معامل التحويل</string>
+    <string name="minimum_stock">الحد الأدنى للمخزون</string>
+    <string name="balance_neutral">متزن</string>
+    <string name="smart_receivable">له</string>
+    <string name="smart_payable">عليه</string>
 </resources>
