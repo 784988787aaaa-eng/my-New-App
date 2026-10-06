@@ -21,9 +21,12 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: gradle
-      - name: Make Gradle executable
-        run: chmod +x gradlew
+      - name: Install Gradle
+        run: |
+          curl -fsSL https://services.gradle.org/distributions/gradle-8.10.2-bin.zip -o /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /tmp
+          echo "/tmp/gradle-8.10.2/bin" >> "$GITHUB_PATH"
       - name: Unit tests
-        run: ./gradlew testDebugUnitTest
+        run: gradle testDebugUnitTest
       - name: Debug APK
-        run: ./gradlew assembleDebug
+        run: gradle assembleDebug
