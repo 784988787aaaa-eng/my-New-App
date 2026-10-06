@@ -88,7 +88,7 @@ fun DashboardScreen(onNavigate: (String) -> Unit = {}) {
             }
 
             FloatingActionButton(
-                onClick = { onNavigate("more") },
+                onClick = { onNavigate("operation") },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = SmartLedgerDimens.Screen, bottom = 24.dp),
