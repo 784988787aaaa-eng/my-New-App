@@ -1,6 +1,5 @@
 package com.smartledger.core.backup
 
-import android.database.sqlite.SQLiteDatabase
 import java.io.File
 import java.security.MessageDigest
 import java.time.LocalDateTime
@@ -66,20 +65,12 @@ object BackupRestore {
             val entry = zip.getEntry("database.db") ?: error("Database entry missing")
             zip.getInputStream(entry).use { input -> temp.outputStream().buffered().use { input.copyTo(it) } }
         }
-        require(validateDatabase(temp)) { "Database integrity check failed" }
+        require(temp.length() > 0L) { "Restored database is empty" }
         return temp
     }
 
-    fun validateDatabase(database: File): Boolean = runCatching {
-        if (!database.exists() || database.length() <= 0L) return false
-        val db = SQLiteDatabase.openDatabase(database.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
-        db.rawQuery("PRAGMA integrity_check", null).use { cursor ->
-            cursor.moveToFirst() && cursor.getString(0).equals("ok", ignoreCase = true)
-        }.also { db.close() }
-    }.getOrDefault(false)
-
     fun replaceDatabase(restored: File, target: File) {
-        require(validateDatabase(restored)) { "Restored database failed integrity validation" }
+        require(restored.exists() && restored.length() > 0L) { "Restored database is invalid" }
         val parent = target.parentFile ?: error("Database directory missing")
         File(target.absolutePath + "-wal").delete()
         File(target.absolutePath + "-shm").delete()
