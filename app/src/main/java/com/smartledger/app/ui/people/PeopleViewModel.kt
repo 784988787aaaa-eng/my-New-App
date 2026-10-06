@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.smartledger.app.data.PeopleRepository
+import com.smartledger.app.data.CurrencyPreferences
 import com.smartledger.core.database.DatabaseMigrations
 import com.smartledger.core.database.PersonEntity
 import com.smartledger.core.database.SmartLedgerDatabase
@@ -28,6 +29,8 @@ class PeopleViewModel(application: Application) : AndroidViewModel(application) 
 
     val people: StateFlow<List<PersonEntity>> = repository.observe()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    val currency = CurrencyPreferences(application).currency
 
     val balances: StateFlow<List<PersonBalanceRow>> = database.personDao().observeBalances()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
