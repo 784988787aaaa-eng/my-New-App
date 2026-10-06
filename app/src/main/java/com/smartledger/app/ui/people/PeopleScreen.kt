@@ -137,7 +137,7 @@ private fun AccountActionsDialog(
         title = { Text(personName) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(SmartLedgerDimens.FormGap)) {
-                Text(stringResource(R.string.account_action_hint), color = SmartLedgerColors.TextSecondary)\n                OutlinedButton(onClick = onStatement, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.account_statement)) }
+                Text(stringResource(R.string.account_action_hint), color = SmartLedgerColors.TextSecondary)\n                OutlinedButton(onClick = onStatement, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.account_statement)) }\n                OutlinedButton(onClick = onDelete, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.delete_account)) }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(!payment, { payment = false }, label = { Text(stringResource(R.string.register_new_debt)) })
                     FilterChip(payment, { payment = true }, label = { Text(stringResource(R.string.register_payment)) })
