@@ -88,6 +88,8 @@ fun ReportsScreen(viewModel: ReportsViewModel = viewModel()) {
                 Text(
                     when (report) {
                         R.string.report_people -> stringResource(R.string.report_people_detail, state.people)
+                        R.string.report_sales -> stringResource(R.string.report_sales_detail, state.sales, MoneyFormatter.formatMinorUnits(state.salesTotal, currency))
+                        R.string.report_purchases -> stringResource(R.string.report_purchases_detail, state.purchases, MoneyFormatter.formatMinorUnits(state.purchasesTotal, currency))
                         R.string.report_inventory -> stringResource(R.string.report_inventory_detail, state.products)
                         else -> stringResource(R.string.report_financial_detail, MoneyFormatter.formatMinorUnits(state.receivable, currency), MoneyFormatter.formatMinorUnits(state.payable, currency))
                     }
