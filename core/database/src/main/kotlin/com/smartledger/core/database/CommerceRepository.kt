@@ -3,7 +3,6 @@ package com.smartledger.core.database
 import androidx.room.withTransaction
 import com.smartledger.core.domain.Sale
 import com.smartledger.core.domain.FinancialDirection
-import com.smartledger.core.domain.Money
 import java.util.UUID
 
 class CommerceRepository(private val db: SmartLedgerDatabase) {
@@ -20,6 +19,7 @@ class CommerceRepository(private val db: SmartLedgerDatabase) {
             if (customerId != null && sale.outstanding().minorUnits > 0) {
                 db.operationDao().insert(OperationEntity(UUID.randomUUID().toString(), customerId, FinancialDirection.RECEIVABLE.name, sale.outstanding().minorUnits, "مبلغ مستحق من البيع " + sale.id, createdAt))
             }
+            db.businessDao().insertAudit(AuditLogEntity(UUID.randomUUID().toString(), "CREATE", "SALE", sale.id, null, createdAt, "lines=" + sale.lines.size))
         }
     }
 }
