@@ -20,7 +20,19 @@
     <string name="settings">الإعدادات</string>
     <string name="no_operations">لا توجد عمليات بعد</string>
     <string name="no_operations_hint">ابدأ بتسجيل أول حركة مالية</string>
-    <string name="currency_placeholder">ر.س</string>
+    <string name="currency_placeholder">ر.ي</string>
+    <string name="currency_yer">ر.ي</string>
+    <string name="base_currency">العملة الأساسية</string>
+    <string name="choose_currency">اختر العملة</string>
+    <string name="currency_saved">تم حفظ العملة الأساسية</string>
+    <string name="currency_warning">تغيير العملة لا يحوّل الأرصدة القديمة؛ يغيّر تنسيق وعرض العملة الأساسية فقط.</string>
+    <string name="no_products">لا توجد أصناف مخزنية بعد</string>
+    <string name="add_product">إضافة صنف</string>
+    <string name="product_name">اسم الصنف</string>
+    <string name="product_sku">رمز الصنف</string>
+    <string name="product_price">سعر البيع</string>
+    <string name="product_cost">التكلفة</string>
+    <string name="product_quantity">الحد الأدنى للمخزون</string>
 
     <string name="more">المزيد</string>
     <string name="search_people">ابحث في الحسابات</string>
