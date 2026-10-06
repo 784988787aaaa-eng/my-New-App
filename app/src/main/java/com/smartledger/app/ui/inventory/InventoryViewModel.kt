@@ -20,8 +20,8 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
     val products: StateFlow<List<ProductEntity>> = db.productDao().observeProducts()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    fun addProduct(name: String, sku: String?, priceMinor: Long, costMinor: Long, minimumStock: Long) = viewModelScope.launch {
-        db.productDao().insert(ProductEntity(UUID.randomUUID().toString(), name.trim(), sku?.trim()?.ifBlank { null }, "piece", costMinor, priceMinor, minimumStock))
+    fun addProduct(name: String, sku: String?, unit: String, secondaryUnit: String?, factor: Long, priceMinor: Long, costMinor: Long, minimumStock: Long) = viewModelScope.launch {
+        db.productDao().insert(ProductEntity(UUID.randomUUID().toString(), name.trim(), sku?.trim()?.ifBlank { null }, unit.trim().ifBlank { "قطعة" }, secondaryUnit?.trim()?.ifBlank { null }, factor.coerceAtLeast(1), costMinor, priceMinor, minimumStock))
     }
 
     override fun onCleared() {
