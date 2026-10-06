@@ -6,6 +6,8 @@ import java.math.RoundingMode
 @JvmInline
 value class Money private constructor(val minorUnits: Long) {
     companion object {
+        fun fromMinorUnits(value: Long): Money = Money(value)
+
         fun fromDecimal(value: BigDecimal, scale: Int = 2): Money =
             Money(value.setScale(scale, RoundingMode.HALF_UP).movePointRight(scale).longValueExact())
 
