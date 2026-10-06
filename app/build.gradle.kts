@@ -7,6 +7,20 @@ plugins {
 android {
     namespace = "com.smartledger.app"
     compileSdk = 35
+    signingConfigs {
+        create("ci") {
+            val keystorePath = System.getenv("CI_KEYSTORE")
+            val keystorePassword = System.getenv("CI_KEYSTORE_PASSWORD")
+            val keyAlias = System.getenv("CI_KEY_ALIAS")
+            val keyPassword = System.getenv("CI_KEY_PASSWORD")
+            if (!keystorePath.isNullOrBlank() && !keystorePassword.isNullOrBlank() && !keyAlias.isNullOrBlank() && !keyPassword.isNullOrBlank()) {
+                storeFile = file(keystorePath)
+                storePassword = keystorePassword
+                this.keyAlias = keyAlias
+                this.keyPassword = keyPassword
+            }
+        }
+    }
     defaultConfig {
         applicationId = "com.smartledger.app"
         minSdk = 26
@@ -15,6 +29,12 @@ android {
         versionName = "0.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        getByName("release") {
+            val ciKeystore = System.getenv("CI_KEYSTORE")
+            if (!ciKeystore.isNullOrBlank()) signingConfig = signingConfigs.getByName("ci")
+        }
     }
     buildFeatures { compose = true }
     packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
