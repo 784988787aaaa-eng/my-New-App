@@ -107,7 +107,7 @@ class MoreViewModel(application: Application) : AndroidViewModel(application) {
 }
 
 @Composable
-fun MoreScreen(onOpenBusinessManagement: () -> Unit = {}, viewModel: MoreViewModel = viewModel()) {
+fun MoreScreen(onOpenBusinessManagement: () -> Unit = {}, onLogout: () -> Unit = {}, viewModel: MoreViewModel = viewModel()) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val restoreLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> uri?.let { viewModel.restoreBackup(it, context.contentResolver) } }
     val currency by viewModel.currency.collectAsState(initial = SupportedCurrencies.YER)
@@ -165,6 +165,9 @@ fun MoreScreen(onOpenBusinessManagement: () -> Unit = {}, viewModel: MoreViewMod
                     }
                 }
             }
+        }
+        item {
+            OutlinedButton(onClick = onLogout, modifier = Modifier.fillMaxWidth()) { Text("تسجيل الخروج") }
         }
         viewModel.message?.let { msg -> item { Text(msg, color = SmartLedgerColors.Success) } }
         viewModel.backupPath?.let { path ->
