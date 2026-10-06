@@ -3,7 +3,7 @@
 PHASE: 10 — QA / Release Candidate
 DATE: 2026-10-06
 BASE: main
-HEAD: cbb0eee3e1b5ce4b096e814e912826466ea9ed96
+HEAD: d6a9ae9607f312ebe04b389b1420dd92710fcbd0
 STATUS: NEEDS_VERIFICATION
 
 ## Implemented
@@ -33,6 +33,10 @@ STATUS: NEEDS_VERIFICATION
 - Production Play signing remains blocked on the owner's production keystore/secrets; CI signing is intentionally ephemeral.
 - Full end-to-end backup/restore has code paths but has not been executed on a real Android installation in this environment.
 
+- Shared Room database provider introduced so ViewModels use one application-scoped database and one migration chain.
+- Inventory product units now support primary/secondary units with conversion factor and Latin-digit money presentation.
+- Upgraded-database report/business-management paths now include migration 3→4.
+
 ## Recently closed
 - Full restore engine path implemented: checkpoint → safety backup → ZIP validation → SQLite integrity check → staged replacement → process restart.
 - Live account statement dialog now displays transaction rows and running balance from the operations source.
@@ -45,9 +49,9 @@ Use only IMPLEMENTED / PARTIAL / MISSING / BROKEN / NEEDS_VERIFICATION / BLOCKED
 No production-readiness claim is made until the release checklist and evidence gates pass.
 
 ## Final acceptance gate — 2026-10-06
-- CI: PASS — GitHub Actions run 188 passed Unit Tests and Debug/Release build pipeline.
-- Release APK: CI artifact `smart-ledger-release-apk`, SHA-256 `e037c8f3bd0398b3914c7bdfe02f3b607bfd6319a3ad87660945b66219d5f8a5`; certificate is experimental, not production Play signing.
+- CI: PASS — GitHub Actions run 279 passed Unit Tests and Debug/Release build pipeline.
+- Release APK: CI artifact `smart-ledger-release-apk`, SHA-256 `626f63648601c497d4b9ed6bd4b0095bfea2f1577535d191e3e886614e22b7d8`; certificate is experimental, not production Play signing.
 - Runtime/device QA: NEEDS_VERIFICATION; no authorized Android runtime device is connected in this session.
 - Visual/accessibility/performance QA: NEEDS_VERIFICATION.
 - Backup/restore full-cycle: PARTIAL; backup creation/integrity is implemented, full Room restore cycle remains.
-- Commercial release decision: NEEDS_VERIFICATION — latest code changes require a fresh CI run; device/runtime, visual/accessibility/performance, full restore, production signing, and real-session permissions remain.
+- Commercial release decision: NEEDS_VERIFICATION — latest CI is green; device/runtime, visual/accessibility/performance, full restore, production signing, device/runtime, visual/accessibility/performance QA, full restore-cycle execution, and real-session permissions remain.
