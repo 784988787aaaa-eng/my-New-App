@@ -62,4 +62,8 @@
     <string name="save">حفظ</string>
     <string name="no_people">لا توجد حسابات بعد</string>
     <string name="coming_soon">سيتم تفعيل هذه الوحدة في المرحلة التالية</string>
+    <string name="operation_hint">سجل مبلغًا على حساب محدد مع اتجاه مالي واضح.</string>
+    <string name="select_account">اختر الحساب</string>
+    <string name="operation_amount">المبلغ</string>
+    <string name="operation_note">وصف العملية</string>
 </resources>
