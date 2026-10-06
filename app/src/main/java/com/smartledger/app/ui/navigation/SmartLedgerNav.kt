@@ -26,6 +26,7 @@ sealed class SmartLedgerRoute(
     data object Operation : SmartLedgerRoute("operation", R.string.new_operation, Icons.Outlined.AddCircle)
     data object Sale : SmartLedgerRoute("sale", R.string.new_sale, Icons.Outlined.ShoppingCart)
     data object Purchase : SmartLedgerRoute("purchase", R.string.new_purchase, Icons.Outlined.ShoppingBag)
+    data object InvoiceHistory : SmartLedgerRoute("invoices", R.string.invoice_history, Icons.Outlined.ReceiptLong)
     data object BusinessManagement : SmartLedgerRoute("business_management", R.string.business_management, Icons.Outlined.Business)
 }
 
