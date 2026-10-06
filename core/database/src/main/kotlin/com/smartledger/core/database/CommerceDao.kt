@@ -11,6 +11,7 @@ interface CommerceDao {
     @Query("SELECT * FROM sales ORDER BY createdAt DESC") suspend fun sales(): List<SaleEntity>
 }
 
+@androidx.room.Entity(tableName = "sales")
 data class SaleEntity(
     @androidx.room.PrimaryKey val id: String,
     val personId: String?,
