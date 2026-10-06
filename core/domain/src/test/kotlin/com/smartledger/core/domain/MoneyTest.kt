@@ -6,6 +6,11 @@ import org.junit.Test
 
 class MoneyTest {
     @Test
+    fun fromMinorUnits_preservesStoredMinorValue() {
+        assertEquals(1250L, Money.fromMinorUnits(1250L).minorUnits)
+    }
+
+    @Test
     fun additionPreservesMinorUnits() {
         val first = Money.fromDecimal(BigDecimal("10.25"))
         val second = Money.fromDecimal(BigDecimal("4.75"))
