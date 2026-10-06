@@ -21,4 +21,25 @@
     <string name="no_operations">لا توجد عمليات بعد</string>
     <string name="no_operations_hint">ابدأ بتسجيل أول حركة مالية</string>
     <string name="currency_placeholder">ر.س</string>
+
+    <string name="more">المزيد</string>
+    <string name="search_people">ابحث في الحسابات</string>
+    <string name="balance_placeholder">الرصيد سيظهر هنا بعد ربط البيانات</string>
+    <string name="people_sample_1">حساب تجريبي</string>
+    <string name="people_sample_2">عميل جديد</string>
+    <string name="people_sample_3">مورد تجريبي</string>
+    <string name="inventory_sample_1">منتج تجريبي</string>
+    <string name="inventory_sample_2">صنف جديد</string>
+    <string name="inventory_sample_3">منتج مخزني</string>
+    <string name="stock_placeholder">الكمية الحالية ستظهر هنا</string>
+    <string name="report_people">تقرير الحسابات</string>
+    <string name="report_sales">تقرير المبيعات</string>
+    <string name="report_purchases">تقرير المشتريات</string>
+    <string name="report_inventory">تقرير المخزون</string>
+    <string name="report_expenses">تقرير النفقات</string>
+    <string name="report_preview_hint">المعاينة والفلاتر والتصدير ستضاف مع طبقة التقارير</string>
+    <string name="business_identity">هوية النشاط</string>
+    <string name="backup_restore">النسخ الاحتياطي والاستعادة</string>
+    <string name="security_privacy">الأمان والخصوصية</string>
+    <string name="user_permissions">المستخدمون والصلاحيات</string>
 </resources>
