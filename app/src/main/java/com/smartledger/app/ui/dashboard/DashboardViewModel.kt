@@ -2,6 +2,7 @@ package com.smartledger.app.ui.dashboard
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.smartledger.app.data.CurrencyPreferences
 import com.smartledger.core.database.DatabaseMigrations
@@ -23,3 +24,4 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DashboardState(0, 0, 0))
     val currency = CurrencyPreferences(application).currency
 }
+    override fun onCleared() { db.close(); super.onCleared() }
