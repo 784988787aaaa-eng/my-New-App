@@ -56,6 +56,15 @@
     <string name="report_inventory_detail">عدد الأصناف الحالية: %1$d</string>
     <string name="report_financial_detail">لنا: %1$s، علينا: %2$s</string>
     <string name="close">إغلاق</string>
+    <string name="tap_to_open">اضغط لفتح الخيارات</string>
+    <string name="create_backup">إنشاء نسخة احتياطية الآن</string>
+    <string name="backup_created">تم إنشاء النسخة الاحتياطية والتحقق من سلامتها.</string>
+    <string name="backup_failed">تعذر إنشاء النسخة الاحتياطية.</string>
+    <string name="backup_ready">آخر نسخة احتياطية جاهزة</string>
+    <string name="backup_restore_detail">سيتم إنشاء نسخة محلية مضغوطة من قاعدة البيانات الحالية مع بيانات الإصدار والتحقق من سلامة الملف.</string>
+    <string name="business_identity_detail">هنا ستُدار هوية النشاط واسم المنشأة وبيانات التواصل. الحقول التجارية الكاملة ستُربط ببيانات النشاط في المرحلة التالية.</string>
+    <string name="security_privacy_detail">بيانات التطبيق محلية افتراضيًا. الأسرار الحساسة تعتمد على Android Keystore، والصلاحيات يجب تطبيقها على المنطق وليس إخفاء الأزرار فقط.</string>
+    <string name="user_permissions_detail">الأدوار والصلاحيات معرفة في طبقة المجال. ربط واجهة إدارة المستخدمين وتطبيق الحماية على كل عملية حساسـة ما زال قيد التنفيذ.</string>
     <string name="business_identity">هوية النشاط</string>
     <string name="backup_restore">النسخ الاحتياطي والاستعادة</string>
     <string name="security_privacy">الأمان والخصوصية</string>
