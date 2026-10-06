@@ -16,7 +16,7 @@ import com.smartledger.core.database.OperationRepository
 import com.smartledger.core.domain.FinancialDirection
 import com.smartledger.core.domain.MoneyParser
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.launch\nimport androidx.room.withTransaction\nimport java.util.UUID
 
 class PeopleViewModel(application: Application) : AndroidViewModel(application) {
     private val database = Room.databaseBuilder(
@@ -34,6 +34,20 @@ class PeopleViewModel(application: Application) : AndroidViewModel(application) 
 
     val balances: StateFlow<List<PersonBalanceRow>> = database.personDao().observeBalances()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    fun deletePerson(personId: String, onDone: () -> Unit = {}) {
+        viewModelScope.launch {
+            runCatching {
+                database.withTransaction {
+                    val person = database.personDao().findById(personId) ?: return@withTransaction
+                    database.personDao().archive(personId)
+                    val payload = listOf(person.name, person.phone.orEmpty(), person.note.orEmpty()).joinToString("\u001F")
+                    database.businessDao().recycle(RecycleBinEntity(UUID.randomUUID().toString(), "PERSON", personId, payload, System.currentTimeMillis()))
+                    database.businessDao().insertAudit(AuditLogEntity(UUID.randomUUID().toString(), "DELETE", "PERSON", personId, null, System.currentTimeMillis(), null))
+                }
+            }.onSuccess { onDone() }
+        }
+    }
 
     fun loadStatement(personId: String, onLoaded: (List<com.smartledger.core.database.DirectionAmount>) -> Unit) {\n        viewModelScope.launch { onLoaded(database.operationDao().entries(personId)) }\n    }\n\n    fun addPayment(personId: String, direction: FinancialDirection, amount: String, note: String?, onDone: () -> Unit = {}) {
         viewModelScope.launch {
