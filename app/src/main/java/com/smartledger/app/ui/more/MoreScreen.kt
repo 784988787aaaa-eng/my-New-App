@@ -145,7 +145,7 @@ fun MoreScreen(onOpenBusinessManagement: () -> Unit = {}, viewModel: MoreViewMod
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = SmartLedgerColors.Surface),
                 border = BorderStroke(1.dp, SmartLedgerColors.Border),
-                onClick = { selectedSetting = item }
+                onClick = { if (item == R.string.business_management) onOpenBusinessManagement() else selectedSetting = item }
             ) {
                 Row(Modifier.fillMaxWidth().padding(SmartLedgerDimens.Card)) {
                     Icon(
