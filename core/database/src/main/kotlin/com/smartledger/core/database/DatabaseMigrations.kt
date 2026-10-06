@@ -17,6 +17,13 @@ object DatabaseMigrations {
         }
     }
 
+    val MIGRATION_3_4 = object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE products ADD COLUMN secondaryUnitId TEXT")
+            db.execSQL("ALTER TABLE products ADD COLUMN conversionFactor INTEGER NOT NULL DEFAULT 1")
+        }
+    }
+
     val MIGRATION_1_2 = object : Migration(1, 2) {
         override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL("CREATE TABLE IF NOT EXISTS products (id TEXT NOT NULL PRIMARY KEY, name TEXT NOT NULL, sku TEXT, unitId TEXT NOT NULL, costMinorUnits INTEGER NOT NULL, priceMinorUnits INTEGER NOT NULL, minimumStock INTEGER NOT NULL, archived INTEGER NOT NULL DEFAULT 0)")
