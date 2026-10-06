@@ -1,6 +1,12 @@
 package com.smartledger.app.ui.more
 
-import android.app.Application\nimport android.content.ContentResolver\nimport android.net.Uri\nimport android.database.sqlite.SQLiteDatabase\nimport android.os.Process\nimport androidx.activity.compose.rememberLauncherForActivityResult\nimport androidx.activity.result.contract.ActivityResultContracts
+import android.app.Application
+import android.content.ContentResolver
+import android.net.Uri
+import android.database.sqlite.SQLiteDatabase
+import android.os.Process
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,7 +25,8 @@ import com.smartledger.app.R
 import com.smartledger.app.data.CurrencyPreferences
 import com.smartledger.core.backup.BackupIntegrity
 import com.smartledger.core.backup.BackupNaming
-import com.smartledger.core.backup.BackupWriter\nimport com.smartledger.core.backup.BackupRestore
+import com.smartledger.core.backup.BackupWriter
+import com.smartledger.core.backup.BackupRestore
 import com.smartledger.core.domain.SupportedCurrencies
 import com.smartledger.app.ui.theme.SmartLedgerColors
 import com.smartledger.app.ui.theme.SmartLedgerDimens
@@ -41,7 +48,10 @@ class MoreViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             runCatching {
                 val context = getApplication<Application>()
-                val database = context.getDatabasePath("smart_ledger.db")\n                if (database.exists()) {\n                    SQLiteDatabase.openDatabase(database.absolutePath, null, SQLiteDatabase.OPEN_READWRITE).use { it.execSQL("PRAGMA wal_checkpoint(FULL)") }\n                }
+                val database = context.getDatabasePath("smart_ledger.db")
+                if (database.exists()) {
+                    SQLiteDatabase.openDatabase(database.absolutePath, null, SQLiteDatabase.OPEN_READWRITE).use { it.execSQL("PRAGMA wal_checkpoint(FULL)") }
+                }
                 val folder = File(context.getExternalFilesDir(null), "backups")
                 val now = LocalDateTime.now()
                 val output = File(folder, BackupNaming.fileName(now))
@@ -56,11 +66,40 @@ class MoreViewModel(application: Application) : AndroidViewModel(application) {
                 message = it.message ?: getApplication<Application>().getString(R.string.backup_failed)
             }
         }
+    fun restoreBackup(uri: Uri, resolver: ContentResolver) {
+        viewModelScope.launch {
+            runCatching {
+                val context = getApplication<Application>()
+                val database = context.getDatabasePath("smart_ledger.db")
+                if (database.exists()) {
+                    SQLiteDatabase.openDatabase(database.absolutePath, null, SQLiteDatabase.OPEN_READWRITE).use { it.execSQL("PRAGMA wal_checkpoint(FULL)") }
+                    val safety = File(context.cacheDir, BackupNaming.fileName())
+                    BackupWriter.write(safety, database, "{\"formatVersion\":1,\"type\":\"pre_restore\"}")
+                }
+                val selected = File(context.cacheDir, "selected_restore.zip")
+                resolver.openInputStream(uri).use { input -> requireNotNull(input) { "تعذر قراءة ملف النسخة" }.copyTo(selected.outputStream()) }
+                val extracted = BackupRestore.extractDatabase(selected, database)
+                val check = SQLiteDatabase.openDatabase(extracted.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
+                val healthy = check.rawQuery("PRAGMA integrity_check", null).use { cursor -> cursor.moveToFirst() && cursor.getString(0) == "ok" }
+                check.close()
+                require(healthy) { "ملف قاعدة البيانات المستعاد غير سليم" }
+                BackupRestore.replaceDatabase(extracted, database)
+                selected.delete()
+            }.onSuccess {
+                message = getApplication<Application>().getString(R.string.restore_success)
+                Process.killProcess(Process.myPid())
+            }.onFailure {
+                message = getApplication<Application>().getString(R.string.restore_failed) + ": " + (it.message ?: "")
+            }
+        }
+    }
     }
 }
 
 @Composable
-fun MoreScreen(onOpenBusinessManagement: () -> Unit = {}, viewModel: MoreViewModel = viewModel()) {\n    val context = androidx.compose.ui.platform.LocalContext.current\n    val restoreLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> uri?.let { viewModel.restoreBackup(it, context.contentResolver) } }
+fun MoreScreen(onOpenBusinessManagement: () -> Unit = {}, viewModel: MoreViewModel = viewModel()) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val restoreLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> uri?.let { viewModel.restoreBackup(it, context.contentResolver) } }
     val currency by viewModel.currency.collectAsState(initial = SupportedCurrencies.YER)
     var showCurrency by remember { mutableStateOf(false) }
     var selectedSetting by remember { mutableStateOf<Int?>(null) }
@@ -150,7 +189,8 @@ fun MoreScreen(onOpenBusinessManagement: () -> Unit = {}, viewModel: MoreViewMod
             text = {
                 if (item == R.string.backup_restore) Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(stringResource(R.string.backup_restore_detail))
-                    Button(onClick = { viewModel.createBackup() }) { Text(stringResource(R.string.create_backup)) }\n                    OutlinedButton(onClick = { restoreLauncher.launch(arrayOf("application/zip", "application/octet-stream")) }) { Text(stringResource(R.string.restore_backup)) }
+                    Button(onClick = { viewModel.createBackup() }) { Text(stringResource(R.string.create_backup)) }
+                    OutlinedButton(onClick = { restoreLauncher.launch(arrayOf("application/zip", "application/octet-stream")) }) { Text(stringResource(R.string.restore_backup)) }
                 } else Text(when (item) {
                     R.string.business_identity -> stringResource(R.string.business_identity_detail)
                     R.string.security_privacy -> stringResource(R.string.security_privacy_detail)
