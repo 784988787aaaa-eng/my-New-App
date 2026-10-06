@@ -65,7 +65,7 @@ fun DashboardScreen(onNavigate: (String) -> Unit = {}) {
                 verticalArrangement = Arrangement.spacedBy(SmartLedgerDimens.Section)
             ) {
                 item {
-                    DashboardHeader()
+                    DashboardHeader(onNavigate)
                 }
                 item {
                     BalanceOverview()
@@ -105,7 +105,7 @@ fun DashboardScreen(onNavigate: (String) -> Unit = {}) {
 }
 
 @Composable
-private fun DashboardHeader() {
+private fun DashboardHeader(onNavigate: (String) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
