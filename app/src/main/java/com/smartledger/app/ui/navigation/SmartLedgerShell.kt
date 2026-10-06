@@ -18,6 +18,7 @@ import com.smartledger.app.ui.inventory.InventoryScreen
 import com.smartledger.app.ui.more.MoreScreen
 import com.smartledger.app.ui.people.PeopleScreen
 import com.smartledger.app.ui.reports.ReportsScreen
+import com.smartledger.app.ui.operations.OperationScreen
 
 @Composable
 fun SmartLedgerShell(navController: NavHostController) {
@@ -55,6 +56,7 @@ fun SmartLedgerShell(navController: NavHostController) {
             composable(SmartLedgerRoute.Inventory.route) { InventoryScreen() }
             composable(SmartLedgerRoute.Reports.route) { ReportsScreen() }
             composable(SmartLedgerRoute.More.route) { MoreScreen() }
+            composable(SmartLedgerRoute.Operation.route) { OperationScreen { navController.popBackStack() } }
         }
     }
 }
