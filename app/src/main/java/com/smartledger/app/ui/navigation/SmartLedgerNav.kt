@@ -19,6 +19,7 @@ sealed class SmartLedgerRoute(
     data object Inventory : SmartLedgerRoute("inventory", R.string.view_inventory, Icons.Outlined.Inventory2)
     data object Reports : SmartLedgerRoute("reports", R.string.reports, Icons.Outlined.Assessment)
     data object More : SmartLedgerRoute("more", R.string.more, Icons.Outlined.MoreHoriz)
+    data object Operation : SmartLedgerRoute("operation", R.string.new_operation, Icons.Outlined.AddCircle)
 }
 
 val primaryRoutes = listOf(
