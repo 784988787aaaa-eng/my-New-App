@@ -25,6 +25,7 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
     var selectedPersonId by remember { mutableStateOf<String?>(null) }
     val people by viewModel.people.collectAsState()
     val balances by viewModel.balances.collectAsState()
+    val currency by viewModel.currency.collectAsState(initial = SupportedCurrencies.YER)
     val balanceMap = remember(balances) { balances.associateBy { it.personId } }
     val filtered = people.filter { it.name.contains(query, ignoreCase = true) }
 
@@ -76,8 +77,8 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
                         Icon(Icons.Outlined.ChevronLeft, contentDescription = stringResource(R.string.open_account))
                     }
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        BalancePill(stringResource(R.string.total_receivable), MoneyFormatter.formatMinorUnits(balance?.receivable ?: 0, SupportedCurrencies.YER), SmartLedgerColors.SuccessContainer, SmartLedgerColors.Success)
-                        BalancePill(stringResource(R.string.total_payable), MoneyFormatter.formatMinorUnits(balance?.payable ?: 0, SupportedCurrencies.YER), SmartLedgerColors.DangerContainer, SmartLedgerColors.Danger)
+                        BalancePill(stringResource(R.string.total_receivable), MoneyFormatter.formatMinorUnits(balance?.receivable ?: 0, currency), SmartLedgerColors.SuccessContainer, SmartLedgerColors.Success)
+                        BalancePill(stringResource(R.string.total_payable), MoneyFormatter.formatMinorUnits(balance?.payable ?: 0, currency), SmartLedgerColors.DangerContainer, SmartLedgerColors.Danger)
                     }
                 }
             }
