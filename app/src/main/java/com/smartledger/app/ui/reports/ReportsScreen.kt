@@ -28,14 +28,14 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-data class ReportsState(val receivable: Long, val payable: Long, val people: Int, val products: Int)
+data class ReportsState(val receivable: Long, val payable: Long, val people: Int, val products: Int, val sales: Int, val purchases: Int, val salesTotal: Long, val purchasesTotal: Long)
 
 class ReportsViewModel(application: Application) : AndroidViewModel(application) {
     private val db = Room.databaseBuilder(application, SmartLedgerDatabase::class.java, "smart_ledger.db")
         .addMigrations(DatabaseMigrations.MIGRATION_1_2, DatabaseMigrations.MIGRATION_2_3).build()
-    val state = combine(db.operationDao().totalReceivable(), db.operationDao().totalPayable(), db.personDao().observePeople(), db.productDao().observeProducts()) { r, p, people, products ->
-        ReportsState(r, p, people.size, products.size)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ReportsState(0, 0, 0, 0))
+    val state = combine(db.operationDao().totalReceivable(), db.operationDao().totalPayable(), db.personDao().observePeople(), db.productDao().observeProducts(), db.commerceDao().salesCount(), db.purchaseDao().purchasesCount(), db.commerceDao().salesTotal(), db.purchaseDao().purchasesTotal()) { r, p, people, products, sales, purchases, salesTotal, purchasesTotal ->
+        ReportsState(r, p, people.size, products.size, sales, purchases, salesTotal, purchasesTotal)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ReportsState(0, 0, 0, 0, 0, 0, 0, 0))
     val currency = CurrencyPreferences(application).currency
     override fun onCleared() { db.close(); super.onCleared() }
 }
