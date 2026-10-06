@@ -56,7 +56,7 @@ fun SmartLedgerShell(navController: NavHostController) {
             composable(SmartLedgerRoute.Inventory.route) { InventoryScreen() }
             composable(SmartLedgerRoute.Reports.route) { ReportsScreen() }
             composable(SmartLedgerRoute.More.route) { MoreScreen() }
-            composable(SmartLedgerRoute.Operation.route) { OperationScreen { navController.popBackStack() } }
+            composable(SmartLedgerRoute.Operation.route) { OperationScreen(onSaved = { navController.popBackStack() }) }
         }
     }
 }
