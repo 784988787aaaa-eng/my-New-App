@@ -3,6 +3,7 @@ package com.smartledger.core.backup
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDateTime
+import java.nio.file.Files
 
 class BackupTest {
     @Test fun fileNameIsStableAndCommerciallyNamed() {
