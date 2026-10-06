@@ -1,5 +1,6 @@
 package com.smartledger.core.backup
 
+import android.database.sqlite.SQLiteDatabase
 import java.io.File
 import java.security.MessageDigest
 import java.time.LocalDateTime
@@ -30,14 +31,14 @@ object BackupIntegrity {
         return digest.digest().joinToString("") { "%02x".format(it) }
     }
 
-    fun validateArchive(archive: File): Boolean {
-        require(archive.exists()) { "Backup not found" }
+    fun validateArchive(archive: File): Boolean = runCatching {
+        require(archive.exists())
         ZipFile(archive).use { zip ->
             val manifest = zip.getEntry("manifest.json") ?: return false
             val database = zip.getEntry("database.db") ?: return false
-            return manifest.size > 0 && database.size >= 0
+            manifest.size > 0 && database.size > 0
         }
-    }
+    }.getOrDefault(false)
 }
 
 object BackupWriter {
@@ -53,5 +54,42 @@ object BackupWriter {
             zip.closeEntry()
         }
         require(BackupIntegrity.validateArchive(output)) { "Backup archive validation failed" }
+    }
+}
+
+object BackupRestore {
+    fun extractDatabase(archive: File, target: File): File {
+        require(BackupIntegrity.validateArchive(archive)) { "Invalid backup archive" }
+        val temp = File(target.parentFile, target.name + ".restore.tmp")
+        temp.delete()
+        ZipFile(archive).use { zip ->
+            val entry = zip.getEntry("database.db") ?: error("Database entry missing")
+            zip.getInputStream(entry).use { input -> temp.outputStream().buffered().use { input.copyTo(it) } }
+        }
+        require(validateDatabase(temp)) { "Database integrity check failed" }
+        return temp
+    }
+
+    fun validateDatabase(database: File): Boolean = runCatching {
+        if (!database.exists() || database.length() <= 0L) return false
+        val db = SQLiteDatabase.openDatabase(database.absolutePath, null, SQLiteDatabase.OPEN_READONLY)
+        db.rawQuery("PRAGMA integrity_check", null).use { cursor ->
+            cursor.moveToFirst() && cursor.getString(0).equals("ok", ignoreCase = true)
+        }.also { db.close() }
+    }.getOrDefault(false)
+
+    fun replaceDatabase(restored: File, target: File) {
+        require(validateDatabase(restored)) { "Restored database failed integrity validation" }
+        val parent = target.parentFile ?: error("Database directory missing")
+        File(target.absolutePath + "-wal").delete()
+        File(target.absolutePath + "-shm").delete()
+        val staged = File(parent, target.name + ".staged")
+        restored.copyTo(staged, overwrite = true)
+        require(staged.renameTo(target) || run {
+            staged.copyTo(target, overwrite = true)
+            staged.delete()
+            true
+        })
+        restored.delete()
     }
 }
