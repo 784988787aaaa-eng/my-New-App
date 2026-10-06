@@ -22,15 +22,15 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.smartledger.app.R
 import com.smartledger.app.ui.theme.SmartLedgerColors
 import com.smartledger.app.ui.theme.SmartLedgerDimens
 
 @Composable
-fun PeopleScreen(viewModel: PeopleViewModel = hiltViewModel()) {
+fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
     var query by remember { mutableStateOf("") }
     var showAdd by remember { mutableStateOf(false) }
     val people by viewModel.people.collectAsState()
