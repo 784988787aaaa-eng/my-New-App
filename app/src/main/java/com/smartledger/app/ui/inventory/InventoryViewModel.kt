@@ -3,6 +3,7 @@ package com.smartledger.app.ui.inventory
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.smartledger.core.database.DatabaseMigrations
 import com.smartledger.core.database.ProductEntity
@@ -17,3 +18,4 @@ class InventoryViewModel(application: Application) : AndroidViewModel(applicatio
     val products: StateFlow<List<ProductEntity>> = db.productDao().observeProducts()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 }
+    override fun onCleared() { db.close(); super.onCleared() }
