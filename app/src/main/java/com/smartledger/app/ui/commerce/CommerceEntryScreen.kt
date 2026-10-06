@@ -38,7 +38,7 @@ class CommerceEntryViewModel(application: Application) : AndroidViewModel(applic
                     val saleLines = lines.map { draft ->
                         val p = products.value.first { it.id == draft.productId }
                         require(draft.quantity > 0)
-                        SaleLine(p.id, draft.quantity, Money.fromDecimal(java.math.BigDecimal.valueOf(p.priceMinorUnits, 2)))
+                        SaleLine(p.id, draft.quantity, Money.fromMinorUnits(p.priceMinorUnits))
                     }
                     val total = saleLines.sumOf { it.unitPrice.minorUnits * it.quantity }
                     require(paid in 0..total)
@@ -50,7 +50,7 @@ class CommerceEntryViewModel(application: Application) : AndroidViewModel(applic
                     val purchaseLines = lines.map { draft ->
                         val p = products.value.first { it.id == draft.productId }
                         require(draft.quantity > 0)
-                        PurchaseLine(p.id, draft.quantity, Money.fromDecimal(java.math.BigDecimal.valueOf(p.costMinorUnits, 2)))
+                        PurchaseLine(p.id, draft.quantity, Money.fromMinorUnits(p.costMinorUnits))
                     }
                     val total = purchaseLines.sumOf { it.unitCost.minorUnits * it.quantity }
                     require(paid in 0..total)
