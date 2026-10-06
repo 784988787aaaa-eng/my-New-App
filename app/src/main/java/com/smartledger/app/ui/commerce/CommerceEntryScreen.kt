@@ -3,6 +3,7 @@ package com.smartledger.app.ui.commerce
 import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -15,39 +16,52 @@ import androidx.room.Room
 import com.smartledger.app.R
 import com.smartledger.core.database.*
 import com.smartledger.core.domain.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 enum class CommerceMode { SALE, PURCHASE }
+data class DraftLine(val productId: String, val quantity: Long)
 
 class CommerceEntryViewModel(application: Application) : AndroidViewModel(application) {
     private val db = Room.databaseBuilder(application, SmartLedgerDatabase::class.java, "smart_ledger.db")
-        .addMigrations(DatabaseMigrations.MIGRATION_1_2, DatabaseMigrations.MIGRATION_2_3).build()
+        .addMigrations(DatabaseMigrations.MIGRATION_1_2, DatabaseMigrations.MIGRATION_2_3, DatabaseMigrations.MIGRATION_3_4).build()
     val products = db.productDao().observeProducts().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val people = db.personDao().observePeople().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    fun save(mode: CommerceMode, product: ProductEntity, personId: String?, quantity: Long, paid: Long, onDone: () -> Unit) {
+    fun save(mode: CommerceMode, lines: List<DraftLine>, personId: String?, paid: Long, onDone: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
-            val price = if (mode == CommerceMode.SALE) product.priceMinorUnits else product.costMinorUnits
-            val total = price * quantity
-            if (total <= 0 || paid !in 0..total) return@launch
             runCatching {
+                require(lines.isNotEmpty()) { "يجب إضافة صنف واحد على الأقل" }
                 if (mode == CommerceMode.SALE) {
+                    val saleLines = lines.map { draft ->
+                        val p = products.value.first { it.id == draft.productId }
+                        require(draft.quantity > 0)
+                        SaleLine(p.id, draft.quantity, Money.fromDecimal(java.math.BigDecimal.valueOf(p.priceMinorUnits, 2)))
+                    }
+                    val total = saleLines.sumOf { it.unitPrice.minorUnits * it.quantity }
+                    require(paid in 0..total)
                     CommerceRepository(db).recordSale(
-                        Sale(UUID.randomUUID().toString(), personId, listOf(SaleLine(product.id, quantity, Money.fromDecimal(java.math.BigDecimal.valueOf(price, 2)))), Money.fromDecimal(java.math.BigDecimal.valueOf(paid, 2))),
+                        Sale(UUID.randomUUID().toString(), personId, saleLines, Money.fromDecimal(java.math.BigDecimal.valueOf(paid, 2))),
                         System.currentTimeMillis()
                     )
                 } else {
+                    val purchaseLines = lines.map { draft ->
+                        val p = products.value.first { it.id == draft.productId }
+                        require(draft.quantity > 0)
+                        PurchaseLine(p.id, draft.quantity, Money.fromDecimal(java.math.BigDecimal.valueOf(p.costMinorUnits, 2)))
+                    }
+                    val total = purchaseLines.sumOf { it.unitCost.minorUnits * it.quantity }
+                    require(paid in 0..total)
                     PurchaseRepository(db).recordPurchase(
-                        PurchaseReceipt(UUID.randomUUID().toString(), personId, listOf(PurchaseLine(product.id, quantity, Money.fromDecimal(java.math.BigDecimal.valueOf(price, 2)))), Money.fromDecimal(java.math.BigDecimal.valueOf(paid, 2))),
+                        PurchaseReceipt(UUID.randomUUID().toString(), personId, purchaseLines, Money.fromDecimal(java.math.BigDecimal.valueOf(paid, 2))),
                         System.currentTimeMillis()
                     )
                 }
-            }.onSuccess { onDone() }
+            }.onSuccess { onDone() }.onFailure { onError(it.message ?: "تعذر حفظ الفاتورة") }
         }
     }
-
     override fun onCleared() { db.close(); super.onCleared() }
 }
 
@@ -56,56 +70,74 @@ class CommerceEntryViewModel(application: Application) : AndroidViewModel(applic
 fun CommerceEntryScreen(mode: CommerceMode, onSaved: () -> Unit, viewModel: CommerceEntryViewModel = viewModel()) {
     val products by viewModel.products.collectAsState()
     val people by viewModel.people.collectAsState()
-    var productId by remember { mutableStateOf<String?>(null) }
     var personId by remember { mutableStateOf<String?>(null) }
+    var productId by remember { mutableStateOf<String?>(null) }
     var quantity by remember { mutableStateOf("1") }
     var paid by remember { mutableStateOf("") }
     var productExpanded by remember { mutableStateOf(false) }
     var personExpanded by remember { mutableStateOf(false) }
-    val product = products.firstOrNull { it.id == productId }
-    val unitPrice = product?.let { if (mode == CommerceMode.SALE) it.priceMinorUnits else it.costMinorUnits } ?: 0
-    val total = unitPrice * (quantity.toLongOrNull() ?: 0)
+    var lines by remember { mutableStateOf<List<DraftLine>>(emptyList()) }
+    var error by remember { mutableStateOf<String?>(null) }
+    val total = lines.sumOf { line ->
+        val p = products.firstOrNull { it.id == line.productId } ?: return@sumOf 0L
+        (if (mode == CommerceMode.SALE) p.priceMinorUnits else p.costMinorUnits) * line.quantity
+    }
+    val paidValue = paid.toLongOrNull() ?: 0L
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
+    LazyColumn(modifier = Modifier.fillMaxSize().imePadding(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item { Text(if (mode == CommerceMode.SALE) stringResource(R.string.new_sale) else stringResource(R.string.new_purchase), style = MaterialTheme.typography.headlineLarge) }
         item {
             ExposedDropdownMenuBox(productExpanded, { productExpanded = !productExpanded }) {
-                OutlinedTextField(product?.name.orEmpty(), {}, Modifier.fillMaxWidth().menuAnchor(), readOnly = true, label = { Text(stringResource(R.string.product_name)) })
+                OutlinedTextField(products.firstOrNull { it.id == productId }?.name.orEmpty(), {}, Modifier.fillMaxWidth().menuAnchor(), readOnly = true, label = { Text(stringResource(R.string.product_name)) })
                 ExposedDropdownMenu(productExpanded, { productExpanded = false }) {
                     products.forEach { p -> DropdownMenuItem(text = { Text(p.name) }, onClick = { productId = p.id; productExpanded = false }) }
                 }
             }
         }
+        item { OutlinedTextField(quantity, { quantity = it.filter(Char::isDigit) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.quantity)) }, singleLine = true) }
+        item {
+            Button(onClick = {
+                productId?.let { id ->
+                    val q = quantity.toLongOrNull() ?: 0L
+                    if (q > 0L) { lines = lines + DraftLine(id, q); productId = null; quantity = "1" }
+                }
+            }, enabled = productId != null && (quantity.toLongOrNull() ?: 0L) > 0L, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.add_invoice_line))
+            }
+        }
+        items(lines.indices.toList()) { index ->
+            val line = lines[index]
+            val p = products.firstOrNull { it.id == line.productId }
+            ListItem(
+                headlineContent = { Text(p?.name.orEmpty()) },
+                supportingContent = { Text(line.quantity.toString() + " × " + (p?.let { if (mode == CommerceMode.SALE) it.priceMinorUnits else it.costMinorUnits } ?: 0L).toString()) },
+                trailingContent = { TextButton(onClick = { lines = lines.toMutableList().also { it.removeAt(index) } }) { Text(stringResource(R.string.remove)) } }
+            )
+        }
         item {
             ExposedDropdownMenuBox(personExpanded, { personExpanded = !personExpanded }) {
                 OutlinedTextField(people.firstOrNull { it.id == personId }?.name.orEmpty(), {}, Modifier.fillMaxWidth().menuAnchor(), readOnly = true, label = { Text(if (mode == CommerceMode.SALE) stringResource(R.string.select_customer_optional) else stringResource(R.string.select_supplier_optional)) })
                 ExposedDropdownMenu(personExpanded, { personExpanded = false }) {
-                    Text(stringResource(R.string.cash_transaction), modifier = Modifier.padding(16.dp))
+                    DropdownMenuItem(text = { Text(stringResource(R.string.cash_transaction)) }, onClick = { personId = null; personExpanded = false })
                     people.forEach { p -> DropdownMenuItem(text = { Text(p.name) }, onClick = { personId = p.id; personExpanded = false }) }
                 }
             }
         }
-        item { OutlinedTextField(quantity, { quantity = it.filter(Char::isDigit) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.quantity)) }, singleLine = true) }
-        item { OutlinedTextField(paid, { paid = it }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.paid_amount)) }, singleLine = true) }
+        item { OutlinedTextField(paid, { paid = it.filter(Char::isDigit) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.paid_amount)) }, singleLine = true) }
         item {
             Card(Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(16.dp)) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(R.string.invoice_total), style = MaterialTheme.typography.titleMedium)
                     Text(total.toString() + " " + stringResource(R.string.currency_yer), style = MaterialTheme.typography.headlineSmall)
-                    Text(stringResource(R.string.outstanding_amount) + ": " + (total - (paid.toLongOrNull() ?: 0)).coerceAtLeast(0), color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.outstanding_amount) + ": " + (total - paidValue).coerceAtLeast(0L).toString())
                 }
             }
         }
+        error?.let { item { Text(it, color = MaterialTheme.colorScheme.error) } }
         item {
-            Button(
-                onClick = { product?.let { viewModel.save(mode, it, personId, quantity.toLongOrNull() ?: 0, paid.toLongOrNull() ?: 0, onSaved) } },
-                enabled = product != null && (quantity.toLongOrNull() ?: 0) > 0 && (paid.toLongOrNull() ?: 0) in 0..total,
-                modifier = Modifier.fillMaxWidth()
-            ) { Text(stringResource(R.string.save)) }
+            Button(onClick = { viewModel.save(mode, lines, personId, paidValue, onSaved) { error = it } }, enabled = lines.isNotEmpty() && total > 0L && paidValue in 0L..total, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.save))
+            }
         }
     }
 }
