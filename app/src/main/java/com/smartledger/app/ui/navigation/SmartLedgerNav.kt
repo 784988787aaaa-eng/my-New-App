@@ -2,6 +2,7 @@ package com.smartledger.app.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material.icons.outlined.Business
 import androidx.compose.material.icons.outlined.Assessment
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Inventory2
@@ -24,7 +25,8 @@ sealed class SmartLedgerRoute(
     data object More : SmartLedgerRoute("more", R.string.more, Icons.Outlined.MoreHoriz)
     data object Operation : SmartLedgerRoute("operation", R.string.new_operation, Icons.Outlined.AddCircle)
     data object Sale : SmartLedgerRoute("sale", R.string.new_sale, Icons.Outlined.ShoppingCart)
-    data object Purchase : SmartLedgerRoute("purchase", R.string.new_purchase, Icons.Outlined.ShoppingBag)\n    data object BusinessManagement : SmartLedgerRoute("business_management", R.string.business_management, Icons.Outlined.Business)
+    data object Purchase : SmartLedgerRoute("purchase", R.string.new_purchase, Icons.Outlined.ShoppingBag)
+    data object BusinessManagement : SmartLedgerRoute("business_management", R.string.business_management, Icons.Outlined.Business)
 }
 
 val primaryRoutes = listOf(
