@@ -8,7 +8,7 @@ import java.util.Locale
 object MoneyFormatter {
     fun formatMinorUnits(minorUnits: Long, currency: Currency): String {
         val value = BigDecimal.valueOf(minorUnits, currency.fractionDigits)
-        val symbols = DecimalFormatSymbols(Locale("ar", "YE")).apply {
+        val symbols = DecimalFormatSymbols(Locale.US).apply {
             groupingSeparator = ','
             decimalSeparator = '.'
         }
