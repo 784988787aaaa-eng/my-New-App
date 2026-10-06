@@ -6,8 +6,8 @@
 **Platform:** Android Phones  
 **Primary language:** Arabic (RTL)  
 **Architecture:** Offline-First, layered architecture  
-**Current phase:** Phase 0 — Forensics / Foundation planning  
-**Current status:** `NEEDS_VERIFICATION`
+**Current phase:** Phase 8 — Security / Commerce / Data hardening  
+**Current status:** `PARTIAL`
 
 ---
 
@@ -779,19 +779,15 @@ Inspect
 
 ## 27. Known Limitations
 
-هذا المستودع في مرحلة التأسيس. لا يوجد في هذه اللحظة دليل على وجود:
+المشروع تجاوز مرحلة الـPrototype: توجد الآن طبقات Domain/Data وRoom وHilt وCI واختبارات، لكن بوابة التسليم التجاري النهائية ما زالت تتطلب Runtime/Visual QA وRelease Build ودورة استعادة Backup فعلية.
 
-- تطبيق Android مكتمل
-- Build ناجح
-- Runtime ناجح
-- Database production schema
-- Financial domain implementation
-- Inventory implementation
-- Sales/Purchases implementation
-- Backup/Restore implementation
-- Visual QA evidence
+- Runtime وVisual QA إنتاجيان مثبتان
+- Release Build/Signing نهائي مثبتان
+- Restore كامل مع Integrity/Sanity validation مثبت
+- جميع شاشات Features النهائية مربوطة
+- E2E على جهاز Android فعلي
 
-سيتم تحديث هذا القسم والـGap Matrix فقط بناءً على Evidence فعلي.
+لا تُرفع حالة المشروع إلى READY_FOR_RELEASE قبل وجود هذه الأدلة.
 
 ---
 
