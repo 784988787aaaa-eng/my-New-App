@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.composable
 import androidx.navigation.NavHostController
 import com.smartledger.app.ui.dashboard.DashboardScreen
@@ -20,13 +21,16 @@ import com.smartledger.app.ui.reports.ReportsScreen
 
 @Composable
 fun SmartLedgerShell(navController: NavHostController) {
+    val backStackEntry = navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry.value?.destination?.route
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             NavigationBar {
                 primaryRoutes.forEach { item ->
                     NavigationBarItem(
-                        selected = navController.currentDestination?.route == item.route,
+                        selected = currentRoute == item.route,
                         onClick = {
                             navController.navigate(item.route) {
                                 popUpTo(SmartLedgerRoute.Home.route) { saveState = true }
