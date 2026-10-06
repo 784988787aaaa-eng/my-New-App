@@ -86,4 +86,11 @@
     <string name="select_account">اختر الحساب</string>
     <string name="operation_amount">المبلغ</string>
     <string name="operation_note">وصف العملية</string>
+    <string name="select_customer_optional">العميل (اختياري)</string>
+    <string name="select_supplier_optional">المورد (اختياري)</string>
+    <string name="cash_transaction">بيع/شراء نقدي بدون حساب</string>
+    <string name="quantity">الكمية</string>
+    <string name="paid_amount">المدفوع</string>
+    <string name="invoice_total">الإجمالي</string>
+    <string name="outstanding_amount">المتبقي</string>
 </resources>
