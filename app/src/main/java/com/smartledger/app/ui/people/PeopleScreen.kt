@@ -23,7 +23,7 @@ import com.smartledger.core.domain.SupportedCurrencies
 fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
     var query by remember { mutableStateOf("") }
     var showAdd by remember { mutableStateOf(false) }
-    var selectedPersonId by remember { mutableStateOf<String?>(null) }
+    var selectedPersonId by remember { mutableStateOf<String?>(null) }\n    var statementPersonId by remember { mutableStateOf<String?>(null) }\n    var statementEntries by remember { mutableStateOf<List<com.smartledger.core.database.DirectionAmount>>(emptyList()) }
     val people by viewModel.people.collectAsState()
     val balances by viewModel.balances.collectAsState()
     val currency by viewModel.currency.collectAsState(initial = SupportedCurrencies.YER)
@@ -137,7 +137,7 @@ private fun AccountActionsDialog(
         title = { Text(personName) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(SmartLedgerDimens.FormGap)) {
-                Text(stringResource(R.string.account_action_hint), color = SmartLedgerColors.TextSecondary)
+                Text(stringResource(R.string.account_action_hint), color = SmartLedgerColors.TextSecondary)\n                OutlinedButton(onClick = onStatement, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.account_statement)) }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(!payment, { payment = false }, label = { Text(stringResource(R.string.register_new_debt)) })
                     FilterChip(payment, { payment = true }, label = { Text(stringResource(R.string.register_payment)) })
