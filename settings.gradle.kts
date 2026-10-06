@@ -2,7 +2,7 @@ pluginManagement {
     repositories { google(); mavenCentral(); gradlePluginPortal() }
 }
 plugins {
-    id("com.google.devtools.ksp") version "2.0.21-1.0.28" apply false
+    id("com.google.devtools.ksp") version "1.9.25-1.0.20" apply false
     id("com.google.dagger.hilt.android") version "2.53.1" apply false
 }
 dependencyResolutionManagement {
