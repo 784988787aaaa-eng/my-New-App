@@ -49,7 +49,13 @@
     <string name="report_purchases">تقرير المشتريات</string>
     <string name="report_inventory">تقرير المخزون</string>
     <string name="report_expenses">تقرير النفقات</string>
-    <string name="report_preview_hint">المعاينة والفلاتر والتصدير ستضاف مع طبقة التقارير</string>
+    <string name="report_preview_hint">اضغط للمعاينة</string>
+    <string name="report_summary">ملخص مالي حي</string>
+    <string name="tap_to_preview">اضغط لعرض البيانات الحالية</string>
+    <string name="report_people_detail">عدد الحسابات الحالية: %1$d</string>
+    <string name="report_inventory_detail">عدد الأصناف الحالية: %1$d</string>
+    <string name="report_financial_detail">لنا: %1$s، علينا: %2$s</string>
+    <string name="close">إغلاق</string>
     <string name="business_identity">هوية النشاط</string>
     <string name="backup_restore">النسخ الاحتياطي والاستعادة</string>
     <string name="security_privacy">الأمان والخصوصية</string>
