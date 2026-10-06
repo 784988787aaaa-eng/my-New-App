@@ -109,22 +109,21 @@ fun ReportsScreen(viewModel: ReportsViewModel = viewModel()) {
         }
     }
     selectedReport?.let { report ->
+        val detail = when (report) {
+            R.string.report_people -> stringResource(R.string.report_people_detail, state.people)
+            R.string.report_sales -> stringResource(R.string.report_sales_detail, state.sales, MoneyFormatter.formatMinorUnits(state.salesTotal, currency))
+            R.string.report_purchases -> stringResource(R.string.report_purchases_detail, state.purchases, MoneyFormatter.formatMinorUnits(state.purchasesTotal, currency))
+            R.string.report_inventory -> stringResource(R.string.report_inventory_detail, state.products)
+            else -> stringResource(R.string.report_financial_detail, MoneyFormatter.formatMinorUnits(state.receivable, currency), MoneyFormatter.formatMinorUnits(state.payable, currency))
+        }
         AlertDialog(
             onDismissRequest = { selectedReport = null },
             title = { Text(stringResource(report)) },
             text = {
-                Text(
-                    when (report) {
-                        R.string.report_people -> stringResource(R.string.report_people_detail, state.people)
-                        R.string.report_sales -> stringResource(R.string.report_sales_detail, state.sales, MoneyFormatter.formatMinorUnits(state.salesTotal, currency))
-                        R.string.report_purchases -> stringResource(R.string.report_purchases_detail, state.purchases, MoneyFormatter.formatMinorUnits(state.purchasesTotal, currency))
-                        R.string.report_inventory -> stringResource(R.string.report_inventory_detail, state.products)
-                        else -> stringResource(R.string.report_financial_detail, MoneyFormatter.formatMinorUnits(state.receivable, currency), MoneyFormatter.formatMinorUnits(state.payable, currency))
-                    }
-                )
+                Text(detail)
             },
             confirmButton = { Row {
-                TextButton(onClick = { context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, reportText.ifBlank { stringResource(report) }) }, "مشاركة التقرير")) }) { Text(stringResource(R.string.share)) }
+                TextButton(onClick = { context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, reportText.ifBlank { detail }) }, "مشاركة التقرير")) }) { Text(stringResource(R.string.share)) }
                 TextButton(onClick = { selectedReport = null }) { Text(stringResource(R.string.close)) }
             } }
         )
