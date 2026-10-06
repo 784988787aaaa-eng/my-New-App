@@ -11,8 +11,8 @@
 | Auth | PARTIAL | Role/permission policy + Keystore |
 | Balance | PARTIAL | Money + BalanceCalculator + live Room aggregates |
 | Inventory | PARTIAL | Product + stock movement + transaction path |
-| Sales/Purchases | PARTIAL | atomic stock + balance posting + live entry screens |
-| Backup/Restore | PARTIAL | real backup creation + archive integrity; restore UI/full-cycle pending |
+| Sales/Purchases | PARTIAL | atomic stock + balance posting + live entry screens; sale edit/return domain hardening |
+| Backup/Restore | PARTIAL | backup + staged restore implementation; full-cycle device test pending |
 | Accessibility | NEEDS_VERIFICATION | device required |
 | Performance | NEEDS_VERIFICATION | device required |
-| Build | PASS | GitHub Actions run 171 |
+| Build | NEEDS_VERIFICATION | Run 236 passed; fresh CI required for HEAD cbb0eee3 |
