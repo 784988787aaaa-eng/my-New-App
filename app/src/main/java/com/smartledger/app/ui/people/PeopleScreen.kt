@@ -94,54 +94,46 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
         if (person != null) AccountActionsDialog(
             personName = person.name,
             onDismiss = { selectedPersonId = null },
-            onOperation = { direction ->
-                selectedPersonId = null
-                viewModel.addOperation(id, direction, onSaved = {})
+            onSave = { direction, amount, note ->
+                viewModel.addOperation(id, direction, amount, note) { selectedPersonId = null }
             }
         )
-    }
-}
-
-@Composable
-private fun BalancePill(title: String, amount: String, container: androidx.compose.ui.graphics.Color, content: androidx.compose.ui.graphics.Color) {
-    Surface(color = container, shape = MaterialTheme.shapes.medium, modifier = Modifier.weight(1f)) {
-        Column(Modifier.padding(10.dp)) {
-            Text(title, style = MaterialTheme.typography.labelMedium, color = content)
-            Text(amount, style = MaterialTheme.typography.titleSmall, color = content)
-        }
-    }
-}
-
-@Composable
-private fun AccountActionsDialog(personName: String, onDismiss: () -> Unit, onOperation: (com.smartledger.core.domain.FinancialDirection) -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(personName) },
-        text = { Text(stringResource(R.string.account_action_hint)) },
-        confirmButton = {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = { onOperation(com.smartledger.core.domain.FinancialDirection.RECEIVABLE) }) { Text(stringResource(R.string.register_receivable)) }
-                Button(onClick = { onOperation(com.smartledger.core.domain.FinancialDirection.PAYABLE) }) { Text(stringResource(R.string.register_payable)) }
-            }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
-    )
-}
-
-@Composable
-private fun AddPersonDialog(onDismiss: () -> Unit, onSave: (String, String?, String?) -> Unit) {
-    var name by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
+    }@Composable
+private fun AccountActionsDialog(
+    personName: String,
+    onDismiss: () -> Unit,
+    onSave: (com.smartledger.core.domain.FinancialDirection, String, String) -> Unit
+) {
+    var direction by remember { mutableStateOf(com.smartledger.core.domain.FinancialDirection.RECEIVABLE) }
+    var amount by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.add_person)) },
-        text = { Column(verticalArrangement = Arrangement.spacedBy(SmartLedgerDimens.FormGap)) {
-            OutlinedTextField(name, { name = it }, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.person_name)) }, singleLine = true)
-            OutlinedTextField(phone, { phone = it }, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.person_phone)) }, singleLine = true)
-            OutlinedTextField(note, { note = it }, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.person_note)) }, minLines = 2)
-        }},
-        confirmButton = { Button(onClick = { onSave(name, phone, note) }, enabled = name.isNotBlank()) { Text(stringResource(R.string.save)) } },
+        title = { Text(personName) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(SmartLedgerDimens.FormGap)) {
+                Text(stringResource(R.string.account_action_hint), color = SmartLedgerColors.TextSecondary)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilterChip(
+                        selected = direction == com.smartledger.core.domain.FinancialDirection.RECEIVABLE,
+                        onClick = { direction = com.smartledger.core.domain.FinancialDirection.RECEIVABLE },
+                        label = { Text(stringResource(R.string.register_receivable)) }
+                    )
+                    FilterChip(
+                        selected = direction == com.smartledger.core.domain.FinancialDirection.PAYABLE,
+                        onClick = { direction = com.smartledger.core.domain.FinancialDirection.PAYABLE },
+                        label = { Text(stringResource(R.string.register_payable)) }
+                    )
+                }
+                OutlinedTextField(amount, { amount = it }, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.operation_amount)) }, singleLine = true)
+                OutlinedTextField(note, { note = it }, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.operation_note)) }, minLines = 2)
+            }
+        },
+        confirmButton = {
+            Button(onClick = { onSave(direction, amount, note) }, enabled = amount.isNotBlank()) {
+                Text(stringResource(R.string.save))
+            }
+        },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
     )
 }
