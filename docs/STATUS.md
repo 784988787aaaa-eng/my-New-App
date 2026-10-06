@@ -4,7 +4,7 @@ PHASE: 3 — Core Domain / Data Foundation
 DATE: 2026-10-06
 BASE: main
 HEAD: 7b8320b4ea0f36371793d3bc1f37f96520264f40
-STATUS: BLOCKED
+STATUS: NEEDS_VERIFICATION
 
 ## Implemented
 - Android Compose shell with Arabic RTL.
@@ -37,9 +37,9 @@ Use only IMPLEMENTED / PARTIAL / MISSING / BROKEN / NEEDS_VERIFICATION / BLOCKED
 No production-readiness claim is made until the release checklist and evidence gates pass.
 
 ## Final acceptance gate — 2026-10-06
-- CI: BLOCKED — latest run is still under verification after Hilt/AGP toolchain correction; previous runs failed at Gradle plugin application.
+- CI: PASS — GitHub Actions run 111 passed Unit Tests, Debug APK, and signed Release APK with ephemeral CI certificate.
 - Release APK/AAB: NEEDS_VERIFICATION.
 - Runtime/device QA: NEEDS_VERIFICATION; no authorized Android runtime device is connected in this session.
 - Visual/accessibility/performance QA: NEEDS_VERIFICATION.
 - Backup/restore full-cycle: PARTIAL; archive structure validation exists, full Room restore cycle remains to be exercised.
-- Commercial release decision: BLOCKED until CI, release build, and device QA are green.
+- Commercial release decision: NEEDS_VERIFICATION — CI is green; physical device/runtime, visual/accessibility/performance QA, and production signing remain.
