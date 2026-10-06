@@ -228,16 +228,16 @@ private fun StatementDialog(
     }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("كشف حساب — $personName") },
+        title = { Text(stringResource(R.string.statement_title, personName)) },
         text = {
             Column(Modifier.fillMaxWidth().heightIn(max = 480.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                if (rows.isEmpty()) Text("لا توجد حركات مسجلة لهذا الحساب.", color = SmartLedgerColors.TextSecondary)
+                if (rows.isEmpty()) Text(stringResource(R.string.no_statement_entries), color = SmartLedgerColors.TextSecondary)
                 rows.forEach { row ->
                     Card(Modifier.fillMaxWidth()) {
                         Column(Modifier.padding(10.dp)) {
-                            Text(if (row.first == FinancialDirection.RECEIVABLE.name) "لنا" else "علينا", style = MaterialTheme.typography.labelLarge)
+                            Text(if (row.first == FinancialDirection.RECEIVABLE.name) stringResource(R.string.total_receivable) else stringResource(R.string.total_payable), style = MaterialTheme.typography.labelLarge)
                             Text(MoneyFormatter.formatMinorUnits(row.second, currency))
-                            Text("الرصيد الجاري: " + MoneyFormatter.formatMinorUnits(row.third, currency), color = SmartLedgerColors.TextSecondary)
+                            Text(stringResource(R.string.running_balance, MoneyFormatter.formatMinorUnits(row.third, currency)), color = SmartLedgerColors.TextSecondary)
                         }
                     }
                 }
