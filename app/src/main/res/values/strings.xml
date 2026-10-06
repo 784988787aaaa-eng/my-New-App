@@ -95,4 +95,6 @@
     <string name="outstanding_amount">المتبقي</string>
     <string name="register_new_debt">تسجيل جديد</string>
     <string name="register_payment">تسجيل سداد</string>
+    <string name="report_sales_detail">عدد فواتير البيع: %1$d\nإجمالي المبيعات: %2$s</string>
+    <string name="report_purchases_detail">عدد فواتير الشراء: %1$d\nإجمالي المشتريات: %2$s</string>
 </resources>
