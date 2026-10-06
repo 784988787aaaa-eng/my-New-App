@@ -50,7 +50,7 @@ fun SmartLedgerShell(navController: NavHostController) {
             startDestination = SmartLedgerRoute.Home.route,
             modifier = Modifier.fillMaxSize()
         ) {
-            composable(SmartLedgerRoute.Home.route) { DashboardScreen() }
+            composable(SmartLedgerRoute.Home.route) { DashboardScreen { route -> navController.navigate(route) { launchSingleTop = true } } }
             composable(SmartLedgerRoute.People.route) { PeopleScreen() }
             composable(SmartLedgerRoute.Inventory.route) { InventoryScreen() }
             composable(SmartLedgerRoute.Reports.route) { ReportsScreen() }
