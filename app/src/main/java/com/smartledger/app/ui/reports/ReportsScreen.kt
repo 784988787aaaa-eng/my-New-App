@@ -21,6 +21,8 @@ import com.smartledger.core.database.DatabaseMigrations
 import com.smartledger.core.domain.MoneyFormatter
 import com.smartledger.core.domain.SupportedCurrencies
 import android.app.Application
+import android.content.Intent
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
@@ -68,7 +70,9 @@ class ReportsViewModel(application: Application) : AndroidViewModel(application)
 fun ReportsScreen(viewModel: ReportsViewModel = viewModel()) {
     val state by viewModel.state.collectAsState()
     val currency by viewModel.currency.collectAsState(initial = SupportedCurrencies.YER)
+    val context = LocalContext.current
     var selectedReport by remember { mutableStateOf<Int?>(null) }
+    var reportText by remember { mutableStateOf("") }
     val reports = listOf(R.string.report_people, R.string.report_sales, R.string.report_purchases, R.string.report_inventory, R.string.report_expenses)
 
     LazyColumn(
@@ -119,7 +123,7 @@ fun ReportsScreen(viewModel: ReportsViewModel = viewModel()) {
                     }
                 )
             },
-            confirmButton = { TextButton(onClick = { selectedReport = null }) { Text(stringResource(R.string.close)) } }
+            confirmButton = { Row {\n                TextButton(onClick = { context.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply { type = "text/plain"; putExtra(Intent.EXTRA_TEXT, reportText.ifBlank { stringResource(report) }) }, "مشاركة التقرير")) }) { Text(stringResource(R.string.share)) }\n                TextButton(onClick = { selectedReport = null }) { Text(stringResource(R.string.close)) }\n            } }
         )
     }
 }
