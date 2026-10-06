@@ -34,7 +34,8 @@ jobs:
           openssl rand -hex 24 > /tmp/ci-key-password
           echo "CI_KEYSTORE_PASSWORD=$(cat /tmp/ci-keystore-password)" >> "$GITHUB_ENV"
           echo "CI_KEY_PASSWORD=$(cat /tmp/ci-key-password)" >> "$GITHUB_ENV"
-          echo "CI_KEY_ALIAS=smart-ledger-ci-$(openssl rand -hex 6)" >> "$GITHUB_ENV"
+          CI_KEY_ALIAS="smart-ledger-ci-$(openssl rand -hex 6)"
+          echo "CI_KEY_ALIAS=$CI_KEY_ALIAS" >> "$GITHUB_ENV"
           keytool -genkeypair -v \
             -keystore /tmp/smart-ledger-ci.jks \
             -storetype PKCS12 \
