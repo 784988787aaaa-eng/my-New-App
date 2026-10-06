@@ -3,7 +3,7 @@ package com.smartledger.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-@Database(entities = [PersonEntity::class, OperationEntity::class, ProductEntity::class, StockMovementEntity::class, SaleEntity::class, SaleLineEntity::class, PurchaseEntity::class, PurchaseLineEntity::class, ExpenseEntity::class, EmployeeEntity::class, AuditLogEntity::class, RecycleBinEntity::class, UserEntity::class], version = 3, exportSchema = true)
+@Database(entities = [PersonEntity::class, OperationEntity::class, ProductEntity::class, StockMovementEntity::class, SaleEntity::class, SaleLineEntity::class, PurchaseEntity::class, PurchaseLineEntity::class, ExpenseEntity::class, EmployeeEntity::class, AuditLogEntity::class, RecycleBinEntity::class, UserEntity::class], version = 4, exportSchema = true)
 abstract class SmartLedgerDatabase : RoomDatabase() {
     abstract fun personDao(): PersonDao
     abstract fun operationDao(): OperationDao
