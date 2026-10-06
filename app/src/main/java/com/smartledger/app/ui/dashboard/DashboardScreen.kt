@@ -48,7 +48,7 @@ private data class QuickAction(
 )
 
 @Composable
-fun DashboardScreen() {
+fun DashboardScreen(onNavigate: (String) -> Unit = {}) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = SmartLedgerColors.Background
@@ -88,7 +88,7 @@ fun DashboardScreen() {
             }
 
             FloatingActionButton(
-                onClick = { },
+                onClick = { onNavigate("more") },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = SmartLedgerDimens.Screen, bottom = 24.dp),
@@ -123,7 +123,7 @@ private fun DashboardHeader() {
                 color = SmartLedgerColors.TextSecondary
             )
         }
-        IconButton(onClick = { }) {
+        IconButton(onClick = { onNavigate("more") }) {
             Icon(
                 imageVector = Icons.Outlined.Settings,
                 contentDescription = stringResource(R.string.settings),
@@ -142,8 +142,8 @@ private fun BalanceOverview() {
         BalanceCard(
             modifier = Modifier.weight(1f),
             title = stringResource(R.string.total_receivable),
-            amount = "0.00",
-            suffix = stringResource(R.string.currency_placeholder),
+            amount = "0",
+            suffix = stringResource(R.string.currency_yer),
             icon = Icons.Outlined.AccountBalanceWallet,
             tint = SmartLedgerColors.Success,
             container = SmartLedgerColors.SuccessContainer
