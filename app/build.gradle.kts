@@ -20,6 +20,7 @@ android {
     packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = "17" }
+    composeOptions { kotlinCompilerExtensionVersion = "1.5.15" }
 }
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2025.01.01")
