@@ -103,8 +103,9 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
             AccountActionsDialog(
                 personName = person.name,
                 onDismiss = { selectedPersonId = null },
-                onSave = { direction, amount, note ->
-                    viewModel.addOperation(id, direction, amount, note) { selectedPersonId = null }
+                onSave = { direction, amount, note, payment ->
+                    if (payment) viewModel.addPayment(id, direction, amount, note) { selectedPersonId = null }
+                    else viewModel.addOperation(id, direction, amount, note) { selectedPersonId = null }
                 }
             )
         }
@@ -125,17 +126,22 @@ private fun BalancePill(modifier: Modifier, title: String, amount: String, conta
 private fun AccountActionsDialog(
     personName: String,
     onDismiss: () -> Unit,
-    onSave: (FinancialDirection, String, String) -> Unit
+    onSave: (FinancialDirection, String, String, Boolean) -> Unit
 ) {
     var direction by remember { mutableStateOf(FinancialDirection.RECEIVABLE) }
     var amount by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
+    var payment by remember { mutableStateOf(false) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(personName) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(SmartLedgerDimens.FormGap)) {
                 Text(stringResource(R.string.account_action_hint), color = SmartLedgerColors.TextSecondary)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilterChip(!payment, { payment = false }, label = { Text(stringResource(R.string.register_new_debt)) })
+                    FilterChip(payment, { payment = true }, label = { Text(stringResource(R.string.register_payment)) })
+                }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(direction == FinancialDirection.RECEIVABLE, { direction = FinancialDirection.RECEIVABLE }, label = { Text(stringResource(R.string.register_receivable)) })
                     FilterChip(direction == FinancialDirection.PAYABLE, { direction = FinancialDirection.PAYABLE }, label = { Text(stringResource(R.string.register_payable)) })
@@ -145,7 +151,7 @@ private fun AccountActionsDialog(
             }
         },
         confirmButton = {
-            Button(onClick = { onSave(direction, amount, note) }, enabled = amount.isNotBlank()) { Text(stringResource(R.string.save)) }
+            Button(onClick = { onSave(direction, amount, note, payment) }, enabled = amount.isNotBlank()) { Text(stringResource(R.string.save)) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } }
     )
