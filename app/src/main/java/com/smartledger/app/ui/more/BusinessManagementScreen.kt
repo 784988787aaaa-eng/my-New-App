@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.Room
+import com.smartledger.app.data.AppDatabaseProvider
 import com.smartledger.core.database.*
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -20,8 +20,7 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 class BusinessManagementViewModel(application: Application) : AndroidViewModel(application) {
-    private val db = Room.databaseBuilder(application, SmartLedgerDatabase::class.java, "smart_ledger.db")
-        .addMigrations(DatabaseMigrations.MIGRATION_1_2, DatabaseMigrations.MIGRATION_2_3).build()
+    private val db = AppDatabaseProvider.get(application)
     val expenses = db.businessDao().observeExpenses().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val employees = db.businessDao().observeEmployees().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val audit = db.businessDao().observeAudit().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -51,7 +50,7 @@ class BusinessManagementViewModel(application: Application) : AndroidViewModel(a
             db.businessDao().insertAudit(AuditLogEntity(UUID.randomUUID().toString(), "RESTORE", "PERSON", item.entityId, null, System.currentTimeMillis(), null))
         }
     }
-    override fun onCleared() { db.close(); super.onCleared() }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
