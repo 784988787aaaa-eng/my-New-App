@@ -16,8 +16,7 @@ import com.smartledger.app.R
 import com.smartledger.app.data.CurrencyPreferences
 import com.smartledger.app.ui.theme.SmartLedgerColors
 import com.smartledger.app.ui.theme.SmartLedgerDimens
-import com.smartledger.core.database.SmartLedgerDatabase
-import com.smartledger.core.database.DatabaseMigrations
+import com.smartledger.app.data.AppDatabaseProvider
 import com.smartledger.core.domain.MoneyFormatter
 import com.smartledger.core.domain.SupportedCurrencies
 import android.app.Application
@@ -25,7 +24,6 @@ import android.content.Intent
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.Room
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -35,8 +33,7 @@ private data class CoreReportState(val receivable: Long, val payable: Long, val 
 private data class CommerceReportState(val sales: Int, val purchases: Int, val salesTotal: Long, val purchasesTotal: Long)
 
 class ReportsViewModel(application: Application) : AndroidViewModel(application) {
-    private val db = Room.databaseBuilder(application, SmartLedgerDatabase::class.java, "smart_ledger.db")
-        .addMigrations(DatabaseMigrations.MIGRATION_1_2, DatabaseMigrations.MIGRATION_2_3, DatabaseMigrations.MIGRATION_3_4).build()
+    private val db = AppDatabaseProvider.get(application)
     private val core = combine(
         db.operationDao().totalReceivable(),
         db.operationDao().totalPayable()
@@ -63,7 +60,7 @@ class ReportsViewModel(application: Application) : AndroidViewModel(application)
         ReportsState(coreValue.receivable, coreValue.payable, coreValue.people, coreValue.products, commerceValue.sales, commerceValue.purchases, commerceValue.salesTotal, commerceValue.purchasesTotal)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ReportsState(0, 0, 0, 0, 0, 0, 0, 0))
     val currency = CurrencyPreferences(application).currency
-    override fun onCleared() { db.close(); super.onCleared() }
+
 }
 
 @Composable
