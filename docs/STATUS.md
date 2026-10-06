@@ -3,7 +3,7 @@
 PHASE: 10 — QA / Release Candidate
 DATE: 2026-10-06
 BASE: main
-HEAD: cd0a13aa0ac15dd3dc9438942aace1c6c0d9af77
+HEAD: cbb0eee3e1b5ce4b096e814e912826466ea9ed96
 STATUS: NEEDS_VERIFICATION
 
 ## Implemented
@@ -26,16 +26,16 @@ STATUS: NEEDS_VERIFICATION
 - Local Android runtime and screenshot QA are NOT yet verified because no connected development device is available in this environment.
 
 ## Remaining critical work
-- Invoice editing and returns still require a complete user-facing history/editor flow; the current entry flow supports multiple lines.
+- Invoice editing/return domain paths are hardened and audited; a dedicated user-facing invoice history/editor screen remains PARTIAL.
 - Permission enforcement is not yet tied to an authenticated session/user role; domain role policy exists but mutation guards need the real session.
-- Full production document generation, print/share and export pipeline remains.
+- Reports support live preview/share text; full production PDF/print/export pipeline remains.
 - Runtime/device, visual, accessibility and performance QA remain unverified in this environment.
 - Production Play signing remains blocked on the owner's production keystore/secrets; CI signing is intentionally ephemeral.
 - Full end-to-end backup/restore has code paths but has not been executed on a real Android installation in this environment.
 
 ## Recently closed
 - Full restore engine path implemented: checkpoint → safety backup → ZIP validation → SQLite integrity check → staged replacement → process restart.
-- Live account statement added and uses the same operations source as balances.
+- Live account statement dialog now displays transaction rows and running balance from the operations source.
 - Multi-line sales/purchase invoice entry implemented with atomic posting.
 - Expenses and employees management screen added.
 - Audit/recycle management screen added; person archive/restore is transactional and audited.
@@ -50,4 +50,4 @@ No production-readiness claim is made until the release checklist and evidence g
 - Runtime/device QA: NEEDS_VERIFICATION; no authorized Android runtime device is connected in this session.
 - Visual/accessibility/performance QA: NEEDS_VERIFICATION.
 - Backup/restore full-cycle: PARTIAL; backup creation/integrity is implemented, full Room restore cycle remains.
-- Commercial release decision: NEEDS_VERIFICATION — CI is green; device/runtime, visual/accessibility/performance, full restore, and production signing remain.
+- Commercial release decision: NEEDS_VERIFICATION — latest code changes require a fresh CI run; device/runtime, visual/accessibility/performance, full restore, production signing, and real-session permissions remain.
