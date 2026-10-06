@@ -10,7 +10,8 @@ class PurchaseRepository(private val db:SmartLedgerDatabase){
    db.purchaseDao().insertPurchase(PurchaseEntity(p.id,p.supplierId,p.total().minorUnits,p.paid.minorUnits,createdAt))
    db.purchaseDao().insertLines(p.lines.mapIndexed{i,l->PurchaseLineEntity(p.id,i,l.productId,l.quantity,l.unitCost.minorUnits)})
    p.lines.forEach{l->db.productDao().insertMovement(StockMovementEntity(UUID.randomUUID().toString(),l.productId,l.quantity,"PURCHASE",p.id,createdAt))}
-   if(p.supplierId != null && p.outstanding().minorUnits > 0) db.operationDao().insert(OperationEntity(UUID.randomUUID().toString(),p.supplierId,FinancialDirection.PAYABLE.name,p.outstanding().minorUnits,"مبلغ مستحق للمورد " + p.id,createdAt))
+   val supplierId = p.supplierId
+   if(supplierId != null && p.outstanding().minorUnits > 0) db.operationDao().insert(OperationEntity(UUID.randomUUID().toString(),supplierId,FinancialDirection.PAYABLE.name,p.outstanding().minorUnits,"مبلغ مستحق للمورد " + p.id,createdAt))
   }
  }
 }
