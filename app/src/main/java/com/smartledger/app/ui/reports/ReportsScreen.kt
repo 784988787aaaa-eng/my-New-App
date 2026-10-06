@@ -33,8 +33,20 @@ data class ReportsState(val receivable: Long, val payable: Long, val people: Int
 class ReportsViewModel(application: Application) : AndroidViewModel(application) {
     private val db = Room.databaseBuilder(application, SmartLedgerDatabase::class.java, "smart_ledger.db")
         .addMigrations(DatabaseMigrations.MIGRATION_1_2, DatabaseMigrations.MIGRATION_2_3).build()
-    val state = combine(db.operationDao().totalReceivable(), db.operationDao().totalPayable(), db.personDao().observePeople(), db.productDao().observeProducts(), db.commerceDao().salesCount(), db.purchaseDao().purchasesCount(), db.commerceDao().salesTotal(), db.purchaseDao().purchasesTotal()) { r, p, people, products, sales, purchases, salesTotal, purchasesTotal ->
-        ReportsState(r, p, people.size, products.size, sales, purchases, salesTotal, purchasesTotal)
+    private val core = combine(
+        db.operationDao().totalReceivable(),
+        db.operationDao().totalPayable(),
+        db.personDao().observePeople(),
+        db.productDao().observeProducts()
+    ) { r, p, people, products -> Triple(ReportsState(r, p, people.size, products.size, 0, 0, 0, 0), Unit) }
+    private val commerce = combine(
+        db.commerceDao().salesCount(),
+        db.purchaseDao().purchasesCount(),
+        db.commerceDao().salesTotal(),
+        db.purchaseDao().purchasesTotal()
+    ) { sales, purchases, salesTotal, purchasesTotal -> longArrayOf(sales.toLong(), purchases.toLong(), salesTotal, purchasesTotal) }
+    val state = combine(core, commerce) { coreState, values ->
+        coreState.first.copy(sales = values[0].toInt(), purchases = values[1].toInt(), salesTotal = values[2], purchasesTotal = values[3])
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ReportsState(0, 0, 0, 0, 0, 0, 0, 0))
     val currency = CurrencyPreferences(application).currency
     override fun onCleared() { db.close(); super.onCleared() }
