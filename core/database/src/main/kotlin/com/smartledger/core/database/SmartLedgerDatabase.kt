@@ -11,5 +11,5 @@ abstract class SmartLedgerDatabase : RoomDatabase() {
     abstract fun commerceDao(): CommerceDao
     abstract fun purchaseDao(): PurchaseDao
     abstract fun businessDao(): BusinessDao
-    abstract fun userDao(): UserDao
+    abstract fun userDao(): UserDao\n    abstract fun businessDao(): BusinessDao
 }
