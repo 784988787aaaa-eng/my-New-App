@@ -1,70 +1,37 @@
-# Smart Ledger Status
+# STATUS
 
-## Current
-PHASE: 1 — Foundation
-STATUS: PARTIAL
+PHASE: 3 — Core Domain / Data Foundation
 DATE: 2026-10-06
 BASE: main
-HEAD: c2d8a88671af7e3a4fadb917ee138142d331e9fb
+HEAD: c8e88ceff0a6f0dbfc86cc6c95fd3b67fb6f8d7a
+STATUS: PARTIAL
 
-## INSPECTED
-- GitHub repository exists and is writable.
-- Default branch is `main`.
-- Repository was effectively empty before this project baseline.
-- README and engineering reference documents are present.
+## Implemented
+- Android Compose shell with Arabic RTL.
+- Centralized baseline visual tokens in app theme.
+- Core modules: common, domain, database, security, localization, design-system, testing.
+- Room database foundation for people and operations.
+- Hilt application and database providers.
+- Room-backed People screen with add/search.
+- Money value object, normalization parser, balance calculator and unit tests.
+- Transactional operation write path.
+- GitHub Actions unit-test + debug-build pipeline.
+- Required engineering/design/implementation documentation foundations.
 
-## FOUND
-- No prior Android product implementation was found.
-- No prior production database/domain/runtime evidence was found.
+## Verification
+- GitHub Actions runs are being used as automated build/test evidence.
+- Local Android runtime and screenshot QA are NOT yet verified because no connected development device is available in this environment.
 
-## CHANGED
-- Android Gradle baseline
-- RTL manifest and app entry point
-- Central color/geometry/typography tokens
-- Dashboard visual baseline
-- Unified Navigation Compose shell
-- People, Inventory, Reports, More visual surfaces
-- Money value object and unit tests
-- Engineering and QA documentation
+## Remaining critical work
+- Full domain/data model: books, products, units, stock movements, sales, purchases, expenses, employees.
+- Unified mutation orchestration and statement projections.
+- Auth, roles, permissions, privacy/app lock, audit and recycle bin.
+- Backup/restore with integrity/version checks.
+- Reports/documents/export/share.
+- Full navigation and feature screens.
+- UI/IME/accessibility/performance/E2E verification.
+- Release signing, Play Console metadata, privacy policy and production release evidence.
 
-## DOMAIN
-PARTIAL — Money exists; business aggregates are pending.
-
-## DATA
-MISSING — Room schema pending.
-
-## SECURITY
-MISSING — Keystore/auth foundation pending.
-
-## UI
-PARTIAL — Core visual shell is established.
-
-## RTL
-PARTIAL — RTL is forced at the composition root; full device QA pending.
-
-## PERFORMANCE
-NEEDS_VERIFICATION
-
-## TESTS
-PARTIAL — Money tests exist; Compose/E2E tests pending.
-
-## BUILD
-NEEDS_VERIFICATION — no connected Android build environment was available during this work session.
-
-## RUNTIME
-NEEDS_VERIFICATION — no emulator/device evidence available.
-
-## VISUAL QA
-NEEDS_VERIFICATION — screenshots require a connected Android runtime.
-
-## RISKS
-- Gradle/AGP/Kotlin versions must be verified by an actual Android build.
-- Currency is still a temporary presentation resource.
-- Dashboard and feature sample rows are visual placeholders until repositories and use cases exist.
-
-## NEXT
-1. Add Hilt and Room foundation.
-2. Centralize localization and currency/business identity.
-3. Implement People/Books/Operations domain and transaction boundaries.
-4. Replace sample UI with StateFlow-backed repositories.
-5. Add Compose UI tests and Android build evidence.
+## Status protocol
+Use only IMPLEMENTED / PARTIAL / MISSING / BROKEN / NEEDS_VERIFICATION / BLOCKED.
+No production-readiness claim is made until the release checklist and evidence gates pass.
