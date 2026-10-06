@@ -34,6 +34,7 @@ fun SmartLedgerShell(session: UserSession, onLogout: () -> Unit, navController: 
         SmartLedgerRoute.Sale.route -> session.can(Permission.MANAGE_SALES)
         SmartLedgerRoute.Purchase.route -> session.can(Permission.MANAGE_PURCHASES)
         SmartLedgerRoute.BusinessManagement.route -> session.can(Permission.MANAGE_EXPENSES)
+        SmartLedgerRoute.InvoiceHistory.route -> session.can(Permission.MANAGE_SALES) || session.can(Permission.MANAGE_PURCHASES)
         else -> false
     }
     fun go(route: String) {
@@ -76,6 +77,7 @@ fun SmartLedgerShell(session: UserSession, onLogout: () -> Unit, navController: 
             composable(SmartLedgerRoute.Sale.route) { if (allowed(SmartLedgerRoute.Sale.route)) CommerceEntryScreen(CommerceMode.SALE, onSaved = { navController.popBackStack() }) }
             composable(SmartLedgerRoute.Purchase.route) { if (allowed(SmartLedgerRoute.Purchase.route)) CommerceEntryScreen(CommerceMode.PURCHASE, onSaved = { navController.popBackStack() }) }
             composable(SmartLedgerRoute.BusinessManagement.route) { if (allowed(SmartLedgerRoute.BusinessManagement.route)) BusinessManagementScreen() }
+            composable(SmartLedgerRoute.InvoiceHistory.route) { if (allowed(SmartLedgerRoute.InvoiceHistory.route)) com.smartledger.app.ui.commerce.InvoiceHistoryScreen() }
         }
     }
 }
