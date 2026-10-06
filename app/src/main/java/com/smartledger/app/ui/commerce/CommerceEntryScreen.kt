@@ -12,8 +12,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.Room
 import com.smartledger.app.R
+import com.smartledger.app.data.AppDatabaseProvider
 import com.smartledger.core.database.*
 import com.smartledger.core.domain.*
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,8 +25,7 @@ enum class CommerceMode { SALE, PURCHASE }
 data class DraftLine(val productId: String, val quantity: Long)
 
 class CommerceEntryViewModel(application: Application) : AndroidViewModel(application) {
-    private val db = Room.databaseBuilder(application, SmartLedgerDatabase::class.java, "smart_ledger.db")
-        .addMigrations(DatabaseMigrations.MIGRATION_1_2, DatabaseMigrations.MIGRATION_2_3, DatabaseMigrations.MIGRATION_3_4).build()
+    private val db = AppDatabaseProvider.get(application)
     val products = db.productDao().observeProducts().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     val people = db.personDao().observePeople().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
@@ -62,7 +61,7 @@ class CommerceEntryViewModel(application: Application) : AndroidViewModel(applic
             }.onSuccess { onDone() }.onFailure { onError(it.message ?: "تعذر حفظ الفاتورة") }
         }
     }
-    override fun onCleared() { db.close(); super.onCleared() }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
