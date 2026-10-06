@@ -11,6 +11,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smartledger.app.R
 import com.smartledger.app.ui.theme.SmartLedgerColors
@@ -100,6 +102,12 @@ fun PeopleScreen(viewModel: PeopleViewModel = viewModel()) {
         )
     }
 
+    statementPersonId?.let { id ->
+        people.firstOrNull { it.id == id }?.let { person ->
+            StatementDialog(person.name, statementEntries, currency) { statementPersonId = null }
+        }
+    }
+
     selectedPersonId?.let { id ->
         people.firstOrNull { it.id == id }?.let { person ->
             AccountActionsDialog(
@@ -185,3 +193,39 @@ private fun AddPersonDialog(onDismiss: () -> Unit, onSave: (String, String?, Str
     )
 }
 
+
+
+@Composable
+private fun StatementDialog(
+    personName: String,
+    entries: List<com.smartledger.core.database.DirectionAmount>,
+    currency: com.smartledger.core.domain.Currency,
+    onDismiss: () -> Unit
+) {
+    var receivable by remember { mutableLongStateOf(0L) }
+    var payable by remember { mutableLongStateOf(0L) }
+    val rows = entries.map { entry ->
+        if (entry.direction == FinancialDirection.RECEIVABLE.name) receivable += entry.amountMinorUnits
+        if (entry.direction == FinancialDirection.PAYABLE.name) payable += entry.amountMinorUnits
+        Triple(entry.direction, entry.amountMinorUnits, receivable - payable)
+    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("كشف حساب — $personName") },
+        text = {
+            Column(Modifier.fillMaxWidth().heightIn(max = 480.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (rows.isEmpty()) Text("لا توجد حركات مسجلة لهذا الحساب.", color = SmartLedgerColors.TextSecondary)
+                rows.forEach { row ->
+                    Card(Modifier.fillMaxWidth()) {
+                        Column(Modifier.padding(10.dp)) {
+                            Text(if (row.first == FinancialDirection.RECEIVABLE.name) "لنا" else "علينا", style = MaterialTheme.typography.labelLarge)
+                            Text(MoneyFormatter.formatMinorUnits(row.second, currency))
+                            Text("الرصيد الجاري: " + MoneyFormatter.formatMinorUnits(row.third, currency), color = SmartLedgerColors.TextSecondary)
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) } }
+    )
+}
